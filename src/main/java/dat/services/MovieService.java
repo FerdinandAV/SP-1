@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dat.DTO.MovieDTO;
 import dat.daos.MovieDAO;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.URI;
