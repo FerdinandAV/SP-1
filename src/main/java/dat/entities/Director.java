@@ -1,6 +1,7 @@
 package dat.entities;
 
-
+import java.util.List;
+import dat.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,8 +11,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name="directors")
 @Entity
+
+@Table(name="directors")
 
 public class Director {
 
@@ -21,6 +23,9 @@ public class Director {
 
    @Column(nullable = false)
    private String name;
+
+   @OneToMany(mappedBy = "director")
+   private List<Movie> movies;
 
    @Column(nullable = false)
    private String original_name;
@@ -32,16 +37,16 @@ public class Director {
    private boolean adult;
 
    @Column(nullable = false)
-   private String Characters;
+   private String character;
 
    @Column(nullable = false)
    private String profile_path;
 
    @Column(nullable = false)
-   private Integer gender;
+   private Gender gender;
 
    @Column(nullable = false)
-   private float popularity;
+   private String popularity;
 
 
 }
