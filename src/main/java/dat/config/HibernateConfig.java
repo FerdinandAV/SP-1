@@ -2,8 +2,10 @@ package dat.config;
 
 
 import dat.entities.Actor;
+
 import dat.entities.Director;
 import dat.entities.Movie;
+
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -38,6 +40,7 @@ public class HibernateConfig {
         configuration.addAnnotatedClass(Actor.class);
         configuration.addAnnotatedClass(Movie.class);
         configuration.addAnnotatedClass(Director.class);
+
     }
 
     private static EntityManagerFactory createEMF(boolean forTest, String DBName) {
