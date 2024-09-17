@@ -39,7 +39,7 @@ public class Actor {
     private String profile_path;
 
     @Column(nullable = false)
-    private int gender;
+    private Gender gender;
 
     @Column(nullable = false)
     private double popularity;
