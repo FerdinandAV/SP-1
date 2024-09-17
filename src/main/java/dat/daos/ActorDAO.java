@@ -10,7 +10,7 @@ public class ActorDAO {
 
     EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("SP1");
 
-    public ActorDAO createActor(ActorDTO actorDTO) {
+    public ActorDTO createActor(ActorDTO actorDTO) {
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
             Actor actor = new Actor(actorDTO);
