@@ -4,6 +4,7 @@ package dat.DTO;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Actor;
 import dat.entities.Director;
+import dat.entities.Movie;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -46,12 +47,26 @@ public class MovieDTO {
     private float vote_average;
     @JsonSetter("vote_count")
     private Integer vote_count;
-
     private List<Actor> actors;
-    private List<Director> dirctors;
+    private Director director;
 
-    public MovieDTO(ActorDTO person, DirectorDTO director) {
-        this.actors = actors;
-        this.dirctors = dirctors;
+    public MovieDTO(Movie movie) {
+        this.id = movie.getId();
+        this.title = movie.getTitle();
+        this.original_title = movie.getOriginal_title();
+        this.release_date = movie.getRelease_date();
+        this.overview = movie.getOverview();
+        this.adult = movie.isAdult();
+        this.original_language = movie.getOriginal_language();
+        this.backdrop_path = movie.getBackdrop_path();
+        this.poster_path = movie.getPoster_path();
+        this.popularity = movie.getPopularity();
+        this.vote_average = movie.getVote_average();
+        this.vote_count = movie.getVote_count();
+        this.video = movie.isVideo();
+        this.actors = movie.getActors();
+        this.actors = new Actor(movie.getActors());
+        this.director = getDirector();
+        this.director = new Director(movie.getDirector());
     }
 }
