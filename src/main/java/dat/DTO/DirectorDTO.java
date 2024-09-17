@@ -1,6 +1,7 @@
 package dat.DTO;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
+import dat.entities.Director;
 import lombok.*;
 
 import java.util.List;
@@ -54,4 +55,13 @@ public class DirectorDTO {
 
     @JsonSetter("profile_path")
     private String profilePath;
+
+    public DirectorDTO(Director director) {
+        this.id = director.getId();
+        this.name = director.getName();
+        this.adult = director.isAdult();
+        this.popularity = director.getPopularity();
+        this.gender = director.getGender();
+        this.profilePath = director.getProfile_path();
+    }
 }

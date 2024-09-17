@@ -42,6 +42,6 @@ public class Actor {
     private Gender gender;
 
     @Column(nullable = false)
-    private String popularity;
+    private double popularity;
 
 }

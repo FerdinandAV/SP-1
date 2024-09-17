@@ -24,9 +24,6 @@ public class Director {
    @Column(nullable = false)
    private String name;
 
-   @OneToMany(mappedBy = "director")
-   private List<Movie> movies;
-
    @Column(nullable = false)
    private String original_name;
 
@@ -37,16 +34,18 @@ public class Director {
    private boolean adult;
 
    @Column(nullable = false)
-   private String character;
-
-   @Column(nullable = false)
-   private String profile_path;
+   private double popularity;
 
    @Column(nullable = false)
    private Gender gender;
 
    @Column(nullable = false)
-   private String popularity;
+    private String known_for_department;
 
+   @Column(nullable = false)
+   private String profile_path;
+
+   @OneToMany(mappedBy = "director")
+   private List<Movie> movies;
 
 }

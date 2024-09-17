@@ -1,5 +1,6 @@
 package dat.daos;
 
+import dat.DTO.DirectorDTO;
 import dat.config.HibernateConfig;
 import dat.entities.Director;
 import dat.DTO.DirectorDTO;

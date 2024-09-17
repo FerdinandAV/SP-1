@@ -1,6 +1,7 @@
 package dat.DTO;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
+import dat.entities.Actor;
 import lombok.*;
 
 import java.util.List;
@@ -46,6 +47,9 @@ public class ActorDTO {
     @JsonSetter("name")
     private String name;
 
+    @JsonSetter("original_name")
+    private String original_name;
+
     @JsonSetter("place_of_birth")
     private String placeOfBirth;
 
@@ -54,4 +58,15 @@ public class ActorDTO {
 
     @JsonSetter("profile_path")
     private String profilePath;
+
+    public ActorDTO(Actor actor) {
+    this.id = actor.getId();
+    this.name = actor.getName();
+    this.original_name = actor.getOriginal_name();
+    this.adult = actor.isAdult();
+    this.profilePath = actor.getProfile_path();
+    this.gender = actor.getGender();
+    this.popularity = actor.getPopularity();
+
+    }
 }
