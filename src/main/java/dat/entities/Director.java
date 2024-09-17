@@ -37,7 +37,7 @@ public class Director {
    private double popularity;
 
    @Column(nullable = false)
-   private int gender;
+   private Gender gender;
 
    @Column(nullable = false)
     private String known_for_department;
