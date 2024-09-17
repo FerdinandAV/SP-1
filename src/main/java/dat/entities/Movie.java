@@ -13,11 +13,15 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Entity
+
+@Table(name="movies")
+
 public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
 
     @Column(nullable = false)
     private String title;
@@ -55,13 +59,32 @@ public class Movie {
     @Column(nullable = false)
     private boolean video;
 
-    @Column(nullable = false)
-    private List<Integer> genre_ids;
+    @ManyToOne
+    @JoinColumn(name = "director_id")
+    private Director director;
 
-    @Column(nullable = false)
+    @ManyToMany
+    @JoinTable(
+            //@JoinTable annotation defines
+            // the intermediary table movie_genre that connects movies and genres.
+            name = "movie_actor",
+
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "actor_id")
+    )
     private List<Actor> actors;
 
-    @Column(nullable = false)
-    private List<Director> dirctors;
+
+
+    @ManyToMany
+    @JoinTable(
+            //The @JoinTable annotation defines the name of the intermediary table,
+            // movie_actor, which connects the movies and actors tables.
+            name = "movie_genre",
+
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private List<Genre> genres;
 
 }
