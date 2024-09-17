@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dat.DTO.MovieDTO;
+import dat.daos.MovieDAO;
 
+import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -17,7 +20,7 @@ public class MovieService {
 
     public static final String API_KEY = System.getenv("API_KEY");
     private static final String BASE_URL_MOVIE = "https://api.themoviedb.org/3/movie/";
-    public static final String BASE_URL_MOVIE_Danish = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_origin_country=DK/";
+    public static final String BASE_URL_MOVIE_Danish = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_origin_country=DK";
 
     public static MovieDTO getMovieById(String id) throws Exception, InterruptedIOException {
 
@@ -48,7 +51,7 @@ public class MovieService {
 
 
 
-    public static void FillDBUpLast5yearsDanish(String id) throws JsonProcessingException {
+    public static void FillDBUpLast5yearsDanish(String id) throws IOException, InterruptedException {
         // Calculate dates for the last 5 years
         LocalDate currentDate = LocalDate.now();
         LocalDate fiveYearsAgo = currentDate.minusYears(5);
@@ -82,12 +85,14 @@ public class MovieService {
         // Assuming the response contains a field "results" with an array of movies
         JsonNode resultsNode = rootNode.get("results");
 
+
         // Process the first 20 movies
         for (int i = 0; i < Math.min(20, resultsNode.size()); i++) {
             JsonNode movieNode = resultsNode.get(i);
             MovieDTO movie = objectMapper.treeToValue(movieNode, MovieDTO.class);
-
-            MovieDAO.save(movie);
+            System.out.println(movie.getTitle());
+            System.out.println(movie);
+            MovieDAO.createMovie(movie);
         }
     }
 }

@@ -4,6 +4,7 @@ package dat.config;
 import dat.entities.Actor;
 
 import dat.entities.Director;
+import dat.entities.Genre;
 import dat.entities.Movie;
 
 import jakarta.persistence.EntityManagerFactory;
@@ -40,6 +41,7 @@ public class HibernateConfig {
         configuration.addAnnotatedClass(Actor.class);
         configuration.addAnnotatedClass(Movie.class);
         configuration.addAnnotatedClass(Director.class);
+        configuration.addAnnotatedClass(Genre.class);
 
     }
 

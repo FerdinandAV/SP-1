@@ -1,12 +1,14 @@
 package dat.DTO;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Actor;
 import dat.entities.Director;
 import dat.entities.Movie;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,7 +42,8 @@ public class MovieDTO {
     @JsonSetter("popularity")
     private float popularity;
     @JsonSetter("release_date")
-    private LocalDateTime release_date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate release_date;
     @JsonSetter("video")
     private boolean video;
     @JsonSetter("vote_average")

@@ -1,9 +1,9 @@
 package dat.daos;
 
-import dat.DTO.ActorDTO;
 import dat.config.HibernateConfig;
 import dat.entities.Actor;
 import dat.entities.Movie;
+import dat.DTO.ActorDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;

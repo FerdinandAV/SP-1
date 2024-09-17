@@ -3,6 +3,7 @@ package dat.daos;
 import dat.DTO.DirectorDTO;
 import dat.config.HibernateConfig;
 import dat.entities.Director;
+import dat.DTO.DirectorDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;

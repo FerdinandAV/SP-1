@@ -22,7 +22,7 @@ public class Genre {
  @GeneratedValue(strategy = GenerationType.IDENTITY)
  private Integer id;
 
- @ManyToMany(mappedBy = "genre")
+ @ManyToMany(mappedBy = "genres")
  private List<Movie> movies;
 
  @Column(nullable = false)
