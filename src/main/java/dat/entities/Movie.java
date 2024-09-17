@@ -56,6 +56,9 @@ public class Movie {
     @Column(nullable = false)
     private Integer vote_count;
 
+    @Column(nullable = false)
+    private boolean video;
+
     @ManyToOne
     @JoinColumn(name = "director_id")
     private Director director;
