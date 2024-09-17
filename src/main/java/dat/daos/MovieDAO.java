@@ -1,5 +1,6 @@
 package dat.daos;
 
+import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
 import dat.entities.Movie;
 import jakarta.persistence.EntityManager;
@@ -8,12 +9,13 @@ import jakarta.persistence.TypedQuery;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MovieDAO {
 
-    EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("SP1");
+    static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("SP1");
 
-    public MovieDTO createMovie(MovieDTO movieDTO) {
+    public static MovieDTO createMovie(MovieDTO movieDTO) {
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
             Movie movie = new Movie(movieDTO);
@@ -75,11 +77,12 @@ public class MovieDAO {
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
             List<Movie> movies = query.getResultList();
 
+            Set<MovieDTO> movieDTOS = new HashSet<>();
+
             for (Movie movie : movies) {
                 movieDTOS.add(new MovieDTO(movie));
             }
 
-            Set<MovieDTO> movieDTOS = new HashSet<>();
             return movieDTOS;
         }
     }
