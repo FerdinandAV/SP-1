@@ -1,6 +1,6 @@
 package dat.entities;
 
-
+import dat.DTO.MovieDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -85,6 +85,32 @@ public class Movie {
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
+
+
+
     private List<Genre> genres;
 
+
+    public Movie(MovieDTO movieDTO, List<Genre> genres) {
+        this.id = movieDTO.getId();
+        this.title = movieDTO.getTitle();
+        this.original_title = movieDTO.getOriginal_title();
+        this.release_date = movieDTO.getRelease_date();
+        this.overview = movieDTO.getOverview();
+        this.adult = movieDTO.isAdult();
+        this.original_language = movieDTO.getOriginal_language();
+        this.backdrop_path = movieDTO.getBackdrop_path();
+        this.poster_path = movieDTO.getPoster_path();
+        this.popularity = movieDTO.getPopularity();
+        this.vote_average = movieDTO.getVote_average();
+        this.vote_count = movieDTO.getVote_count();
+        this.director = movieDTO.getDirector(); // No need to cast
+        this.actors = movieDTO.getActors();
+        this.genres = genres; // Converted list of Genre entities
+    }
+
 }
+
+
+
+
