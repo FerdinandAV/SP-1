@@ -1,6 +1,8 @@
 package dat.entities;
 
 import java.util.List;
+
+import dat.DTO.DirectorDTO;
 import dat.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,5 +50,17 @@ public class Director {
    @Column(nullable = false)
    private String popularity;
 
+
+   public  Director(DirectorDTO directorDTO) {
+      this.id = directorDTO.getId();
+      this.name = directorDTO.getName();
+      this.original_name = getOriginal_name();
+      this.media_type = getMedia_type();
+      this.adult = directorDTO.isAdult();
+      this.character = directorDTO.getBiography();
+      this.profile_path = directorDTO.getProfilePath();
+      this.gender = getGender();
+      this.popularity = getPopularity();
+   }
 
 }

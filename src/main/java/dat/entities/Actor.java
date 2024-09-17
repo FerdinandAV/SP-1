@@ -1,6 +1,8 @@
 package dat.entities;
 
 
+import dat.DTO.ActorDTO;
+import dat.DTO.DirectorDTO;
 import dat.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,5 +45,19 @@ public class Actor {
 
     @Column(nullable = false)
     private String popularity;
+
+
+    public  Actor(ActorDTO actorDTO) {
+        this.id = actorDTO.getId();
+        this.name = actorDTO.getName();
+        this.original_name = getOriginal_name();
+        this.media_type = getMedia_type();
+        this.adult = actorDTO.isAdult();
+        this.character = actorDTO.getBiography();
+        this.profile_path = actorDTO.getProfilePath();
+        this.gender = getGender();
+        this.popularity = getPopularity();
+    }
+
 
 }

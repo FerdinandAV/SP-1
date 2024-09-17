@@ -1,5 +1,6 @@
 package dat.daos;
 
+import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
 import dat.entities.Movie;
 import jakarta.persistence.EntityManager;
