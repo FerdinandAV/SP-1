@@ -2,6 +2,7 @@ package dat.DTO;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Director;
+import dat.enums.Gender;
 import lombok.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class DirectorDTO {
     private String deathday;
 
     @JsonSetter("gender")
-    private int gender;
+    private Gender gender;
 
     @JsonSetter("homepage")
     private String homepage;

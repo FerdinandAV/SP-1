@@ -2,6 +2,7 @@ package dat.DTO;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Actor;
+import dat.enums.Gender;
 import lombok.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class ActorDTO {
     private String deathday;
 
     @JsonSetter("gender")
-    private int gender;
+    private Gender gender;
 
     @JsonSetter("homepage")
     private String homepage;
@@ -67,6 +68,5 @@ public class ActorDTO {
     this.profilePath = actor.getProfile_path();
     this.gender = actor.getGender();
     this.popularity = actor.getPopularity();
-
     }
 }
