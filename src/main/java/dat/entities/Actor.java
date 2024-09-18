@@ -1,6 +1,7 @@
 package dat.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.DTO.ActorDTO;
 import dat.DTO.DirectorDTO;
 import dat.enums.Gender;
@@ -22,6 +23,9 @@ public class Actor {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Column(nullable = true)
+    private String imdbId;
+
     @Column(nullable = false)
     private String name;
 
@@ -34,14 +38,14 @@ public class Actor {
     @Column(nullable = false)
     private boolean adult;
 
-    @Column(nullable = false)
+    @Column(nullable = true, length = 5000)
     private String character;
 
     @Column(nullable = false)
     private String profile_path;
 
-    @Column(nullable = false)
-    private Gender gender;
+    /*@Column(nullable = true)
+    private Gender gender;*/
 
     /*@Column(nullable = false)
     private double popularity;*/
@@ -55,7 +59,8 @@ public class Actor {
         this.adult = actorDTO.isAdult();
         this.character = actorDTO.getBiography();
         this.profile_path = actorDTO.getProfilePath();
-        this.gender = getGender();
+        //this.gender = getGender();
+        this.imdbId = actorDTO.getImdbId();
         //this.popularity = getPopularity();
     }
 
