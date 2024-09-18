@@ -19,9 +19,9 @@ import java.util.List;
 
 public class MovieService {
 
-    public static final String API_KEY = System.getenv("API_KEY");
-    private static final String BASE_URL_MOVIE = "https://api.themoviedb.org/3/movie/";
-    public static final String BASE_URL_MOVIE_Danish = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_origin_country=DK";
+    public static final String API_KEY = System.getenv("API_KEY"); // Getting API key from the environment variables
+    private static final String BASE_URL_MOVIE = "https://api.themoviedb.org/3/movie/"; // URL for fetching a movie by ID
+    public static final String BASE_URL_MOVIE_Danish = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_origin_country=DK"; // URL for fetching Danish movies
 
     public static MovieDTO getMovieById(String id) throws Exception, InterruptedIOException {
 
@@ -30,6 +30,7 @@ public class MovieService {
         String url = BASE_URL_MOVIE_Danish + id + "&page="+ "?api_key=" + API_KEY;
 
 
+        // Create an HTTP client
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
                 .newBuilder()
@@ -37,14 +38,14 @@ public class MovieService {
                 .GET()
                 .build();
 
-        // Now you Send the HTTP request
+        // Send the HTTP request
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-
+        // Parse the response
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-
         JsonNode rootNode = objectMapper.readTree(response.body());
+
 
         MovieDTO movie = objectMapper.treeToValue(rootNode, MovieDTO.class);
         return movie;
@@ -68,6 +69,7 @@ public class MovieService {
                 "&primary_release_date.lte=" + currentDateString +
                 "&page=" + page + "&api_key=" + API_KEY;
 
+        // Create an HTTP client
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
                 .newBuilder()
@@ -101,6 +103,7 @@ public class MovieService {
     public static List<MovieDTO> FillDBUpLast5yearsDanish(int totalPages) throws IOException, InterruptedException {
         List<MovieDTO> movieDTOS = new ArrayList<>();
 
+        // Fetch all movies from the last 5 years
         for (int page = 1; page <= totalPages; page++) {
             List<MovieDTO> movies = fetchAllMovies(page);
             System.out.println("Movies fetched from page " + page + ": " + movies.size());

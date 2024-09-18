@@ -15,6 +15,7 @@ import java.util.List;
 @ToString
 @Builder
 
+// Annotation to ignore unknown properties in the JSON file
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ActorDTO {
     @JsonSetter("adult")
@@ -61,6 +62,8 @@ public class ActorDTO {
 
     @JsonSetter("profile_path")
     private String profilePath;
+
+    // Constructor to convert Actor to a ActorDTO
 
     public ActorDTO(Actor actor) {
         this.id = actor.getId();
