@@ -75,8 +75,6 @@ public class MovieService {
                 .GET()
                 .build();
 
-        System.out.println(url);
-
         // Send the HTTP request
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -109,7 +107,7 @@ public class MovieService {
             System.out.println("Movies fetched from page " + page + ": " + movies.size());
             movieDTOS.addAll(movies);
         }
-        //MovieDAO.createMovies(movieDTOS);
+        MovieDAO.createMovies(movieDTOS);
 
         return movieDTOS;
     }

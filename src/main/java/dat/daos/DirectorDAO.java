@@ -10,7 +10,7 @@ import jakarta.persistence.TypedQuery;
 
 public class DirectorDAO {
 
-    EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("SP1");
+    EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
 
     public DirectorDTO createDirector(DirectorDTO directorDTO) {
         Director director = new Director(directorDTO);

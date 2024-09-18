@@ -53,8 +53,8 @@ public class DirectorDTO {
     @JsonSetter("place_of_birth")
     private String placeOfBirth;
 
-    @JsonSetter("popularity")
-    private double popularity;
+    /*@JsonSetter("popularity")
+    private double popularity;*/
 
     @JsonSetter("profile_path")
     private String profilePath;
@@ -63,7 +63,7 @@ public class DirectorDTO {
         this.id = director.getId();
         this.name = director.getName();
         this.adult = director.isAdult();
-        this.popularity = director.getPopularity();
+        //this.popularity = director.getPopularity();
         this.gender = director.getGender();
         this.profilePath = director.getProfile_path();
     }

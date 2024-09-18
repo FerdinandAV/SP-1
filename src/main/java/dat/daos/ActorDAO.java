@@ -10,7 +10,7 @@ import jakarta.persistence.TypedQuery;
 
 public class ActorDAO {
 
-    static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("SP1");
+    static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
 
     public static ActorDTO createActor(ActorDTO actorDTO) {
         Actor actor = new Actor(actorDTO);
