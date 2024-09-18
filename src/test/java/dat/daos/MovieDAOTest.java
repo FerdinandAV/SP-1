@@ -25,9 +25,6 @@ class MovieDAOTest {
         System.out.println(movie);
     }
 
-    @Test
-    void createMovies() {
-    }
 
     @Test
     void updateMovie() {

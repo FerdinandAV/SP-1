@@ -8,6 +8,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 
+import java.util.List;
+
 public class ActorDAO {
 
     static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
@@ -60,12 +62,30 @@ public class ActorDAO {
             em.getTransaction().commit();
         }
 
+
+
+
     }
 
     public ActorDTO findActor(int id) {
         try (EntityManager em = emf.createEntityManager()) {
             Actor actor = em.find(Actor.class, id);
             return new ActorDTO(actor);
+        }
+    }
+
+    public List<Movie> findMoviesByActorId(int actorId) {
+        try (EntityManager em = emf.createEntityManager()) {
+            // Retrieve the actor by ID
+            Actor actor = em.find(Actor.class, actorId);
+            if (actor == null) {
+                throw new RuntimeException("Actor not found with ID: " + actorId);
+            }
+
+            // Retrieve movies for the actor
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.actors a WHERE a.id = :actorId", Movie.class);
+            query.setParameter("actorId", actorId);
+            return query.getResultList();
         }
     }
 
