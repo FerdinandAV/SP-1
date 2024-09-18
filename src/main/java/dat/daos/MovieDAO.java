@@ -2,16 +2,13 @@ package dat.daos;
 
 import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
-import dat.entities.Director;
 import dat.entities.Movie;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MovieDAO {
 
@@ -64,17 +61,36 @@ public class MovieDAO {
     }
 
     public MovieDTO updateMovie(MovieDTO movieDTO) {
-        Movie movie = new Movie(movieDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
             em.getTransaction().begin();
 
-            //Update movie
-            em.merge(movie);
-            em.getTransaction().commit();
-        }
+            Movie existingMovie = em.find(Movie.class, movieDTO.getId());
+            if (existingMovie == null) {
+                throw new IllegalArgumentException("Movie not found with id: " + movieDTO.getId());
+            }
 
-        return new MovieDTO(movie);
+            existingMovie.setTmdb_id(movieDTO.getTmdb_id());
+            existingMovie.setTitle(movieDTO.getTitle());
+            existingMovie.setOriginal_title(movieDTO.getOriginal_title());
+            existingMovie.setRelease_date(movieDTO.getRelease_date());
+            existingMovie.setOverview(movieDTO.getOverview());
+            existingMovie.setAdult(movieDTO.isAdult());
+            existingMovie.setOriginal_language(movieDTO.getOriginal_language());
+            existingMovie.setPoster_path(movieDTO.getPoster_path());
+            existingMovie.setPopularity(movieDTO.getPopularity());
+            existingMovie.setVote_average(movieDTO.getVote_average());
+            existingMovie.setVote_count(movieDTO.getVote_count());
+            existingMovie.setVideo(movieDTO.isVideo());
+
+            System.out.println(existingMovie);
+
+            //Update movie
+            Movie updatedMovie = em.merge(existingMovie);
+            em.getTransaction().commit();
+
+            return new MovieDTO(updatedMovie);
+        }
     }
 
     public void deleteMovie(MovieDTO movieDTO) {
@@ -97,19 +113,76 @@ public class MovieDAO {
         }
     }
 
-    public MovieDTO findMovieByTitle(String title) {
-        try (EntityManager em = emf.createEntityManager()) {
+    public List<MovieDTO> findMovieByTitle(String title) {
+        List<MovieDTO> movieDTOS = new ArrayList<>();
 
-        }
-        return null;
-    }
-
-    public static List<MovieDTO> getTotalAverageRating() {
         try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
             List<Movie> movies = query.getResultList();
 
-            return null;
+            movieDTOS = movies.stream()
+                    .filter(movie -> movie.getTitle().toLowerCase().contains(title.toLowerCase()))
+                    .map(movie -> new MovieDTO(movie))
+                    .collect(Collectors.toList());
+        }
+        return movieDTOS;
+    }
+
+    public double getTotalAverageRating() {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+            List<Movie> movies = query.getResultList();
+
+            double number = movies.stream()
+                    .filter(movie -> movie.getVote_count() > 20)
+                    .mapToDouble(Movie::getVote_average)
+                    .average()
+                    .orElse(0.0);
+
+            //DoubleStream stream = DoubleStream.of(movies.stream().mapToInt(m -> m.getVote_count()).sum());
+            //System.out.println(number);
+
+            return number;
+        }
+    }
+
+    public List<MovieDTO> getTopTenBestMovies() {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+            List<Movie> movies = query.getResultList();
+            List<MovieDTO> movieDTOS = movies.stream()
+                    .sorted(Comparator.comparing(Movie::getVote_average).reversed())
+                    .filter(movie -> movie.getVote_count() > 50)
+                    .limit(10)
+                    .map(movie -> new MovieDTO(movie))
+                    .collect(Collectors.toList());
+            return movieDTOS;
+        }
+    }
+
+    public List<MovieDTO> getTopTenWorstMovies() {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m ORDER BY m.vote_average ASC", Movie.class);
+            List<Movie> movies = query.getResultList();
+            List<MovieDTO> movieDTOS = movies.stream()
+                    .filter(movie -> movie.getVote_count() > 50)
+                    .limit(10)
+                    .map(movie -> new MovieDTO(movie))
+                    .collect(Collectors.toList());
+            return movieDTOS;
+        }
+    }
+
+    public List<MovieDTO> getTopTenMostPopularMovies() {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m ORDER BY m.popularity DESC", Movie.class);
+            List<Movie> movies = query.getResultList();
+            List<MovieDTO> movieDTOS = movies.stream()
+                    .filter(movie -> movie.getVote_count() > 50)
+                    .limit(10)
+                    .map(movie -> new MovieDTO(movie))
+                    .collect(Collectors.toList());
+            return movieDTOS;
         }
     }
 
