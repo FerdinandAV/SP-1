@@ -1,5 +1,6 @@
 package dat.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Director;
 import dat.enums.Gender;
@@ -14,6 +15,7 @@ import java.util.List;
 @ToString
 @Builder
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DirectorDTO {
     @JsonSetter("adult")
     private boolean adult;

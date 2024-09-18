@@ -42,13 +42,13 @@ public class Director {
    private Gender gender;
 
    @Column(nullable = false)
-    private String known_for_department;
+   private String known_for_department;
 
    @Column(nullable = false)
    private String profile_path;
 
-   @OneToMany(mappedBy = "director")
-   private List<Movie> movies;
+   /*@OneToMany(mappedBy = "director")
+   private List<Movie> movies;*/
 
    public  Director(DirectorDTO directorDTO) {
       this.id = directorDTO.getId();
@@ -56,7 +56,6 @@ public class Director {
       this.original_name = getOriginal_name();
       this.media_type = getMedia_type();
       this.adult = directorDTO.isAdult();
-      this.character = directorDTO.getBiography();
       this.profile_path = directorDTO.getProfilePath();
       this.gender = getGender();
       this.popularity = getPopularity();
