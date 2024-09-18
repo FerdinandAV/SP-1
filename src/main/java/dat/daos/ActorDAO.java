@@ -10,12 +10,12 @@ import jakarta.persistence.TypedQuery;
 
 public class ActorDAO {
 
-    EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("SP1");
+    static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("SP1");
 
-    public ActorDTO createActor(ActorDTO actorDTO) {
+    public static ActorDTO createActor(ActorDTO actorDTO) {
+        Actor actor = new Actor(actorDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
-            Actor actor = new Actor(actorDTO);
             em.getTransaction().begin();
 
             //Check if actor already exists
@@ -36,9 +36,9 @@ public class ActorDAO {
     }
 
     public ActorDTO updateActor(ActorDTO actorDTO) {
+        Actor actor = new Actor(actorDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
-            Actor actor = new actor(actorDTO);
             em.getTransaction().begin();
 
             //Update actor
@@ -50,9 +50,9 @@ public class ActorDAO {
     }
 
     public void deleteActor(ActorDTO actorDTO) {
+        Actor actor = new Actor(actorDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
-            Actor actor = new Actor(actorDTO);
             em.getTransaction().begin();
 
             //Delete actor
@@ -60,7 +60,6 @@ public class ActorDAO {
             em.getTransaction().commit();
         }
 
-        return new ActorDTO(actor);
     }
 
     public ActorDTO findActor(int id) {

@@ -2,6 +2,7 @@ package dat.DTO;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Actor;
 import dat.entities.Director;
@@ -18,6 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Builder
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieDTO {
     @JsonSetter("backdrop_path")
     private String backdrop_path;
@@ -50,8 +53,9 @@ public class MovieDTO {
     private float vote_average;
     @JsonSetter("vote_count")
     private Integer vote_count;
-    private List<Actor> actors;
-    private Director director;
+
+    /*private List<Actor> actors;
+    private Director director;*/
 
     public MovieDTO(Movie movie) {
         this.id = movie.getId();
@@ -67,9 +71,9 @@ public class MovieDTO {
         this.vote_average = movie.getVote_average();
         this.vote_count = movie.getVote_count();
         this.video = movie.isVideo();
-        this.actors = movie.getActors();
-        this.actors = new Actor(movie.getActors());
-        this.director = getDirector();
-        this.director = new Director(movie.getDirector());
+        //this.actors = movie.getActors();
+        //this.actors = new Actor(movie.getActors());
+        //this.director = getDirector();
+        //this.director = new Director(movie.getDirector());
     }
 }

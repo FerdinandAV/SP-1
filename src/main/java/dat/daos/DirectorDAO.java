@@ -13,9 +13,9 @@ public class DirectorDAO {
     EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("SP1");
 
     public DirectorDTO createDirector(DirectorDTO directorDTO) {
+        Director director = new Director(directorDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
-            Director director = new Director(directorDTO);
             em.getTransaction().begin();
 
             //Check if director already exists
@@ -36,9 +36,9 @@ public class DirectorDAO {
     }
 
     public DirectorDTO updateDirector(DirectorDTO directorDTO) {
+        Director director = new Director(directorDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
-            Director director = new Director(directorDTO);
             em.getTransaction().begin();
 
             //Update actor
@@ -50,9 +50,9 @@ public class DirectorDAO {
     }
 
     public void deleteDirector(DirectorDTO directorDTO) {
+        Director director = new Director(directorDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
-            Director director = new Director(directorDTO);
             em.getTransaction().begin();
 
             //Delete director
@@ -60,7 +60,6 @@ public class DirectorDAO {
             em.getTransaction().commit();
         }
 
-        return new DirectorDTO(director);
     }
 
     public DirectorDTO findDirector(int id) {

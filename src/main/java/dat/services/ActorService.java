@@ -3,6 +3,8 @@ package dat.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dat.DTO.ActorDTO;
+import dat.daos.ActorDAO;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -40,10 +42,10 @@ public class ActorService {
         // Process the first 20 actors
         for (int i = 0; i < Math.min(20, resultsNode.size()); i++) {
             JsonNode actorNode = resultsNode.get(i);
-            ActorDTO actor = objectMapper.treeToValue(actorNode, ActorDTO.class);
+            ActorDTO actorDTO = objectMapper.treeToValue(actorNode, ActorDTO.class);
 
             // Save the actor to your database using ActorDAO
-            ActorDAO.save(actor);
+            ActorDAO.createActor(actorDTO);
         }
     }
 }

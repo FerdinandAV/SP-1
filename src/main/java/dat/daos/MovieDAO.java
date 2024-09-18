@@ -2,7 +2,9 @@ package dat.daos;
 
 import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
+import dat.entities.Director;
 import dat.entities.Movie;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
@@ -16,18 +18,24 @@ public class MovieDAO {
     static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("SP1");
 
     public static MovieDTO createMovie(MovieDTO movieDTO) {
+        Movie movie = new Movie(movieDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
-            Movie movie = new Movie(movieDTO);
             em.getTransaction().begin();
 
             //Check if movie already exists
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.title = :title", Movie.class);
             query.setParameter("title", movie.getTitle());
             if (query.getResultList().isEmpty()) {
-                em.persist(movie);
+                try {
+                    em.persist(movie);
+                } catch (EntityExistsException e) {
+                    System.out.println("Movie already exists");
+                }
             }
             else {
+                /*movie.setId(query.getResultList().get(0).getId());
+                em.merge(movie);*/
                 System.out.println("Movie already exists");
                 movie = query.getSingleResult();
             }
@@ -37,10 +45,32 @@ public class MovieDAO {
         return new MovieDTO(movie);
     }
 
+    public static void createMovies(List<MovieDTO> movieDTOS) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+
+            for (MovieDTO movieDTO : movieDTOS) {
+                Movie movie = new Movie(movieDTO);
+
+                //Check if movie already exists
+                TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.title = :title", Movie.class);
+                query.setParameter("title", movie.getTitle());
+                if (query.getResultList().isEmpty()) {
+                    em.persist(movie);
+                }
+                else {
+                    System.out.println("Movie already exists");
+                    movie = query.getSingleResult();
+                }
+            }
+            em.getTransaction().commit();
+        }
+    }
+
     public MovieDTO updateMovie(MovieDTO movieDTO) {
+        Movie movie = new Movie(movieDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
-            Movie movie = new Movie(movieDTO);
             em.getTransaction().begin();
 
             //Update movie
@@ -52,9 +82,9 @@ public class MovieDAO {
     }
 
     public void deleteMovie(MovieDTO movieDTO) {
+        Movie movie = new Movie(movieDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
-            Movie movie = new Movie(movieDTO);
             em.getTransaction().begin();
 
             //Delete movie
@@ -62,7 +92,6 @@ public class MovieDAO {
             em.getTransaction().commit();
         }
 
-        return new MovieDTO(movie);
     }
 
     public MovieDTO findMovie(int id) {

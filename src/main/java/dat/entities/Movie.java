@@ -4,6 +4,7 @@ import dat.DTO.MovieDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,13 +16,11 @@ import java.util.List;
 @Entity
 
 @Table(name="movies")
-
 public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
 
     @Column(nullable = false)
     private String title;
@@ -30,7 +29,7 @@ public class Movie {
     private String original_title;
 
     @Column(nullable = false)
-    private LocalDateTime release_date;
+    private LocalDate release_date;
 
     @Column(nullable = false)
     private String overview;
@@ -59,7 +58,7 @@ public class Movie {
     @Column(nullable = false)
     private boolean video;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "director_id")
     private Director director;
 
@@ -86,12 +85,9 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
 
+    private List<Genre> genres;*/
 
-
-    private List<Genre> genres;
-
-
-    public Movie(MovieDTO movieDTO, List<Genre> genres) {
+    public Movie(MovieDTO movieDTO) {
         this.id = movieDTO.getId();
         this.title = movieDTO.getTitle();
         this.original_title = movieDTO.getOriginal_title();
@@ -104,9 +100,8 @@ public class Movie {
         this.popularity = movieDTO.getPopularity();
         this.vote_average = movieDTO.getVote_average();
         this.vote_count = movieDTO.getVote_count();
-        this.director = movieDTO.getDirector(); // No need to cast
-        this.actors = movieDTO.getActors();
-        this.genres = genres; // Converted list of Genre entities
+        /*this.director = movieDTO.getDirector(); // No need to cast
+        this.actors = movieDTO.getActors();*/
     }
 
 }

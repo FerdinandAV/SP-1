@@ -14,6 +14,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MovieService {
 
@@ -50,7 +52,7 @@ public class MovieService {
 
 
 
-    public static void FillDBUpLast5yearsDanish(String id) throws IOException, InterruptedException {
+    public static List<MovieDTO> fetchAllMovies(int page) throws IOException, InterruptedException {
         // Calculate dates for the last 5 years
         LocalDate currentDate = LocalDate.now();
         LocalDate fiveYearsAgo = currentDate.minusYears(5);
@@ -64,7 +66,7 @@ public class MovieService {
         String url = BASE_URL_MOVIE_Danish +
                 "&primary_release_date.gte=" + fiveYearsAgoString +
                 "&primary_release_date.lte=" + currentDateString +
-                "&page=1&api_key=" + API_KEY;
+                "&page=" + page + "&api_key=" + API_KEY;
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
@@ -72,6 +74,8 @@ public class MovieService {
                 .uri(URI.create(url))
                 .GET()
                 .build();
+
+        System.out.println(url);
 
         // Send the HTTP request
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -84,14 +88,29 @@ public class MovieService {
         // Assuming the response contains a field "results" with an array of movies
         JsonNode resultsNode = rootNode.get("results");
 
+        List<MovieDTO> movies = new ArrayList<>();
 
         // Process the first 20 movies
         for (int i = 0; i < Math.min(20, resultsNode.size()); i++) {
             JsonNode movieNode = resultsNode.get(i);
             MovieDTO movie = objectMapper.treeToValue(movieNode, MovieDTO.class);
             System.out.println(movie.getTitle());
-            System.out.println(movie);
-            MovieDAO.createMovie(movie);
+            //MovieDAO.createMovie(movie);
+            movies.add(movie);
         }
+        return movies;
+    }
+
+    public static List<MovieDTO> FillDBUpLast5yearsDanish(int totalPages) throws IOException, InterruptedException {
+        List<MovieDTO> movieDTOS = new ArrayList<>();
+
+        for (int page = 1; page <= totalPages; page++) {
+            List<MovieDTO> movies = fetchAllMovies(page);
+            System.out.println("Movies fetched from page " + page + ": " + movies.size());
+            movieDTOS.addAll(movies);
+        }
+        //MovieDAO.createMovies(movieDTOS);
+
+        return movieDTOS;
     }
 }
