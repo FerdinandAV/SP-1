@@ -43,8 +43,8 @@ public class Actor {
     @Column(nullable = false)
     private Gender gender;
 
-    @Column(nullable = false)
-    private double popularity;
+    /*@Column(nullable = false)
+    private double popularity;*/
 
 
     public Actor(ActorDTO actorDTO) {
@@ -56,7 +56,7 @@ public class Actor {
         this.character = actorDTO.getBiography();
         this.profile_path = actorDTO.getProfilePath();
         this.gender = getGender();
-        this.popularity = getPopularity();
+        //this.popularity = getPopularity();
     }
 
 

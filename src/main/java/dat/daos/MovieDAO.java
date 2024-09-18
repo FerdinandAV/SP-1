@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class MovieDAO {
 
-    static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("SP1");
+    static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
 
     public static MovieDTO createMovie(MovieDTO movieDTO) {
         Movie movie = new Movie(movieDTO);
@@ -27,11 +27,7 @@ public class MovieDAO {
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.title = :title", Movie.class);
             query.setParameter("title", movie.getTitle());
             if (query.getResultList().isEmpty()) {
-                try {
-                    em.persist(movie);
-                } catch (EntityExistsException e) {
-                    System.out.println("Movie already exists");
-                }
+                em.merge(movie);
             }
             else {
                 /*movie.setId(query.getResultList().get(0).getId());
@@ -53,10 +49,10 @@ public class MovieDAO {
                 Movie movie = new Movie(movieDTO);
 
                 //Check if movie already exists
-                TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.title = :title", Movie.class);
-                query.setParameter("title", movie.getTitle());
+                TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.tmdb_id = :tmdb_id", Movie.class);
+                query.setParameter("tmdb_id", movie.getTmdb_id());
                 if (query.getResultList().isEmpty()) {
-                    em.persist(movie);
+                    em.merge(movie);
                 }
                 else {
                     System.out.println("Movie already exists");
@@ -98,6 +94,22 @@ public class MovieDAO {
         try (EntityManager em = emf.createEntityManager()) {
             Movie movie = em.find(Movie.class, id);
             return new MovieDTO(movie);
+        }
+    }
+
+    public MovieDTO findMovieByTitle(String title) {
+        try (EntityManager em = emf.createEntityManager()) {
+
+        }
+        return null;
+    }
+
+    public static List<MovieDTO> getTotalAverageRating() {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+            List<Movie> movies = query.getResultList();
+
+            return null;
         }
     }
 
