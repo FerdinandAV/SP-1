@@ -1,7 +1,9 @@
 package dat.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Actor;
+import dat.enums.Gender;
 import lombok.*;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 @ToString
 @Builder
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ActorDTO {
     @JsonSetter("adult")
     private boolean adult;
@@ -30,7 +33,7 @@ public class ActorDTO {
     private String deathday;
 
     @JsonSetter("gender")
-    private int gender;
+    private Gender gender;
 
     @JsonSetter("homepage")
     private String homepage;
@@ -60,13 +63,12 @@ public class ActorDTO {
     private String profilePath;
 
     public ActorDTO(Actor actor) {
-    this.id = actor.getId();
-    this.name = actor.getName();
-    this.original_name = actor.getOriginal_name();
-    this.adult = actor.isAdult();
-    this.profilePath = actor.getProfile_path();
-    this.gender = actor.getGender();
-    this.popularity = actor.getPopularity();
-
+        this.id = actor.getId();
+        this.name = actor.getName();
+        this.original_name = actor.getOriginal_name();
+        this.adult = actor.isAdult();
+        this.profilePath = actor.getProfile_path();
+        this.gender = actor.getGender();
+        this.popularity = actor.getPopularity();
     }
 }

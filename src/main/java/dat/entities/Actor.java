@@ -47,7 +47,7 @@ public class Actor {
     private double popularity;
 
 
-    public  Actor(ActorDTO actorDTO) {
+    public Actor(ActorDTO actorDTO) {
         this.id = actorDTO.getId();
         this.name = actorDTO.getName();
         this.original_name = getOriginal_name();
