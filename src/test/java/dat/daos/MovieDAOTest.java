@@ -37,7 +37,7 @@ class MovieDAOTest {
         newMovieDTO.setOriginal_title("fuck you 2");
         newMovieDTO.setRelease_date(LocalDate.now());
         System.out.println(newMovieDTO);
-        movieDAO.updateMovie(movieDTO);
+        movieDAO.updateMovie(newMovieDTO);
     }
 
     @Test

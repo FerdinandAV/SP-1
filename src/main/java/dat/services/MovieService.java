@@ -16,6 +16,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MovieService {
 
@@ -106,6 +110,40 @@ public class MovieService {
             System.out.println("Movies fetched from page " + page + ": " + movies.size());
             movieDTOS.addAll(movies);
         }
+        MovieDAO.createMovies(movieDTOS);
+
+        return movieDTOS;
+    }
+
+    public static List<MovieDTO> FillDBUpLast5yearsDanish2(int totalPages) throws IOException, InterruptedException {
+        List<MovieDTO> movieDTOS = new ArrayList<>();
+
+        ExecutorService executor = Executors.newFixedThreadPool(6);
+
+        List<Callable<List<MovieDTO>>> movieTasks = new ArrayList<>();
+
+        for (int page = 1; page <= totalPages; page++) {
+
+            int finalPage = page;
+            movieTasks.add(() -> fetchAllMovies(finalPage));
+        }
+
+        List<Future<List<MovieDTO>>> futures = null;
+        try {
+            futures = executor.invokeAll(movieTasks);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        for (Future<List<MovieDTO>> future : futures) {
+            try {
+                List<MovieDTO> movies = future.get();
+                movieDTOS.addAll(movies);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         MovieDAO.createMovies(movieDTOS);
 
         return movieDTOS;
