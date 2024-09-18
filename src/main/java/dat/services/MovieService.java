@@ -93,7 +93,6 @@ public class MovieService {
             JsonNode movieNode = resultsNode.get(i);
             MovieDTO movie = objectMapper.treeToValue(movieNode, MovieDTO.class);
             System.out.println(movie.getTitle());
-            //MovieDAO.createMovie(movie);
             movies.add(movie);
         }
         return movies;
