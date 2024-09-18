@@ -22,6 +22,8 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private Long tmdb_id;
+
     @Column(nullable = false)
     private String title;
 
@@ -31,7 +33,7 @@ public class Movie {
     @Column(nullable = false)
     private LocalDate release_date;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1024)
     private String overview;
 
     @Column(nullable = false)
@@ -40,10 +42,10 @@ public class Movie {
     @Column(nullable = false)
     private String original_language;
 
-    @Column(nullable = false)
-    private String backdrop_path;
+    /*@Column(length = 512)
+    private String backdrop_path;*/
 
-    @Column(nullable = false)
+    @Column(length = 512)
     private String poster_path;
 
     @Column(nullable = false)
@@ -89,13 +91,14 @@ public class Movie {
 
     public Movie(MovieDTO movieDTO) {
         this.id = movieDTO.getId();
+        this.tmdb_id = movieDTO.getTmdb_id();
         this.title = movieDTO.getTitle();
         this.original_title = movieDTO.getOriginal_title();
         this.release_date = movieDTO.getRelease_date();
         this.overview = movieDTO.getOverview();
         this.adult = movieDTO.isAdult();
         this.original_language = movieDTO.getOriginal_language();
-        this.backdrop_path = movieDTO.getBackdrop_path();
+        //this.backdrop_path = movieDTO.getBackdrop_path();
         this.poster_path = movieDTO.getPoster_path();
         this.popularity = movieDTO.getPopularity();
         this.vote_average = movieDTO.getVote_average();

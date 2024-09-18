@@ -56,8 +56,8 @@ public class ActorDTO {
     @JsonSetter("place_of_birth")
     private String placeOfBirth;
 
-    @JsonSetter("popularity")
-    private double popularity;
+    /*@JsonSetter("popularity")
+    private double popularity;*/
 
     @JsonSetter("profile_path")
     private String profilePath;
@@ -69,6 +69,6 @@ public class ActorDTO {
         this.adult = actor.isAdult();
         this.profilePath = actor.getProfile_path();
         this.gender = actor.getGender();
-        this.popularity = actor.getPopularity();
+        //this.popularity = actor.getPopularity();
     }
 }

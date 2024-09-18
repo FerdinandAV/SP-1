@@ -35,8 +35,8 @@ public class Director {
    @Column(nullable = false)
    private boolean adult;
 
-   @Column(nullable = false)
-   private double popularity;
+   /*@Column(nullable = false)
+   private double popularity;*/
 
    @Column(nullable = false)
    private Gender gender;
@@ -58,7 +58,7 @@ public class Director {
       this.adult = directorDTO.isAdult();
       this.profile_path = directorDTO.getProfilePath();
       this.gender = getGender();
-      this.popularity = getPopularity();
+      //this.popularity = getPopularity();
    }
 
 }

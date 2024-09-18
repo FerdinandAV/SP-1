@@ -12,11 +12,9 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
-
         try {
             List<MovieDTO> movieDTOS = MovieService.FillDBUpLast5yearsDanish(58);
-            MovieDAO.createMovie(movieDTOS.get(0));
+            //MovieDAO.createMovie(movieDTOS.get(0));
             System.out.println("Movies added to DB: " + movieDTOS.size());
         } catch (IOException e) {
             throw new RuntimeException(e);
