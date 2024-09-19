@@ -74,7 +74,7 @@ public class ActorDAO {
         }
     }
 
-    public List<Movie> findMoviesByActorId(int actorId) {
+    public List<MovieDTO> findMoviesByActorId(int actorId) {
         try (EntityManager em = emf.createEntityManager()) {
             // Retrieve the actor by ID
             Actor actor = em.find(Actor.class, actorId);
@@ -85,7 +85,8 @@ public class ActorDAO {
             // Retrieve movies for the actor
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.actors a WHERE a.id = :actorId", Movie.class);
             query.setParameter("actorId", actorId);
-            return query.getResultList();
+            List<MovieDTO> moviesDTOs = query.getResultList().forEach((movie) -> new MovieDTO(movie));
+            return moviesDTOs;
         }
     }
 
