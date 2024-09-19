@@ -44,11 +44,11 @@ public class Actor {
     @Column(nullable = true)
     private String profile_path;
 
-    /*@Column(nullable = true)
-    private Gender gender;*/
+    @Column(nullable = false)
+    private Gender gender;
 
-    /*@Column(nullable = false)
-    private double popularity;*/
+    @Column(nullable = false)
+    private double popularity;
 
     @ManyToMany(mappedBy = "actors")
     private List<Movie> movies;
@@ -66,7 +66,6 @@ public class Actor {
         }
     }
 
-
     // Constructor to create an Actor object from an ActorDTO object
     public Actor(ActorDTO actorDTO) {
         this.id = actorDTO.getId();
@@ -80,6 +79,4 @@ public class Actor {
         this.imdbId = actorDTO.getImdbId();
         //this.popularity = getPopularity();
     }
-
-
 }

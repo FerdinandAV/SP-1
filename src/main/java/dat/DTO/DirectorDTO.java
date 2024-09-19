@@ -41,10 +41,10 @@ public class DirectorDTO {
     @JsonSetter("homepage")
     private String homepage;
 
-    @JsonSetter("id")
+    @JsonIgnore
     private int id;
 
-    @JsonSetter("imdb_id")
+    @JsonSetter("id")
     private String imdbId;
 
     @JsonSetter("known_for_department")
@@ -74,6 +74,7 @@ public class DirectorDTO {
         this.id = director.getId();
         this.name = director.getName();
         this.adult = director.isAdult();
+        this.imdbId = director.getImdbId();
         //this.popularity = director.getPopularity();
         this.gender = director.getGender();
         this.profilePath = director.getProfile_path();

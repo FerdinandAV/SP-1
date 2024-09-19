@@ -10,6 +10,7 @@ import dat.entities.Genre;
 import dat.entities.Movie;
 import dat.services.ActorService;
 import dat.services.GenreService;
+import dat.services.DirectorService;
 import dat.services.MovieService;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -38,6 +39,10 @@ public class Main {
 
             //Set actors and directors for movies
             MovieService.addActorsAndDirectorsForMovies(new ArrayList<>(movies));
+
+            DirectorService.fillDBWithDirectors(movies);
+
+
 
             //Fill database up with genres
             GenreService.fillDBWithGenres();

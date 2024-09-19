@@ -138,11 +138,8 @@ public class MovieService {
                 throw new RuntimeException(e);
             }
         }
-
         executor.shutdown();
-
         MovieDAO.createMovies(movieDTOS);
-
     }
 
     public static void addActorsAndDirectorsForMovies(List<MovieDTO> movieDTOS) throws IOException, InterruptedException {
