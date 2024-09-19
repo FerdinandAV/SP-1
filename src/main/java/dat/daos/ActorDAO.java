@@ -73,15 +73,6 @@ public class ActorDAO {
         }
     }
 
-    public static void createActors2(List<ActorDTO> actorDTOS, Set<MovieDTO> movieDTOS) {
-        try(EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-
-            System.out.println("Fill her up!!!! 2222");
-
-        }
-
-    }
 
     public ActorDTO updateActor(ActorDTO actorDTO) {
         Actor actor = new Actor(actorDTO);
