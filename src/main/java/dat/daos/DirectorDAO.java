@@ -1,8 +1,10 @@
 package dat.daos;
 
+import dat.DTO.ActorDTO;
 import dat.DTO.DirectorDTO;
 import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
+import dat.entities.Actor;
 import dat.entities.Director;
 import dat.DTO.DirectorDTO;
 import dat.entities.Movie;
@@ -12,12 +14,13 @@ import jakarta.persistence.TypedQuery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class DirectorDAO {
 
-    EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
+    static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
 
-    public DirectorDTO createDirector(DirectorDTO directorDTO) {
+    public static DirectorDTO createDirector(DirectorDTO directorDTO) {
         Director director = new Director(directorDTO);
         try (EntityManager em = emf.createEntityManager()) {
             //Convert DTO to Entity
@@ -38,6 +41,29 @@ public class DirectorDAO {
         }
         return new DirectorDTO(director);
 
+    }
+
+    public static void createDirectors(Set<DirectorDTO> directorDTOS) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+
+            System.out.println("Fill her up!!!!");
+
+            for (DirectorDTO directorDTO : directorDTOS) {
+                Director director = new Director(directorDTO);
+
+                //Check if movie already exists
+                TypedQuery<Director> query = em.createQuery("SELECT d FROM Director d WHERE d.imdbId = :imdb_id", Director.class);
+                query.setParameter("imdb_id", directorDTO.getImdbId());
+                if (query.getResultList().isEmpty()) {
+                    em.merge(director);
+                }
+                else {
+                    System.out.println("Actor already exists");
+                }
+            }
+            em.getTransaction().commit();
+        }
     }
 
     public DirectorDTO updateDirector(DirectorDTO directorDTO) {

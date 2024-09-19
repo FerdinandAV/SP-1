@@ -36,8 +36,8 @@ public class ActorDTO {
     @JsonSetter("deathday")
     private String deathday;
 
-    /*@JsonSetter("gender")
-    private Gender gender;*/
+    @JsonSetter("gender")
+    private Gender gender;
 
     @JsonSetter("homepage")
     private String homepage;
@@ -60,8 +60,8 @@ public class ActorDTO {
     @JsonSetter("place_of_birth")
     private String placeOfBirth;
 
-    /*@JsonSetter("popularity")
-    private double popularity;*/
+    @JsonSetter("popularity")
+    private double popularity;
 
     @JsonSetter("profile_path")
     private String profilePath;
@@ -74,7 +74,7 @@ public class ActorDTO {
         this.original_name = actor.getOriginal_name();
         this.adult = actor.isAdult();
         this.profilePath = actor.getProfile_path();
-        //this.gender = actor.getGender();
-        //this.popularity = actor.getPopularity();
+        this.gender = actor.getGender();
+        this.popularity = actor.getPopularity();
     }
 }
