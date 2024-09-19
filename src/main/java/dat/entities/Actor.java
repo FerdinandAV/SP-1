@@ -26,29 +26,30 @@ public class Actor {
     @Column(nullable = true)
     private String imdbId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String original_name;
 
-    @Column(nullable = false)
-    private String media_type;
+    /*
+    @Column(nullable = true)
+    private String media_type;*/
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private boolean adult;
 
     @Column(nullable = true, length = 5000)
     private String character;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String profile_path;
 
-    /*@Column(nullable = true)
-    private Gender gender;*/
+    @Column(nullable = false)
+    private Gender gender;
 
-    /*@Column(nullable = false)
-    private double popularity;*/
+    @Column(nullable = false)
+    private double popularity;
 
 
     // Constructor to create an Actor object from an ActorDTO object
@@ -56,15 +57,15 @@ public class Actor {
         this.id = actorDTO.getId();
         this.name = actorDTO.getName();
         this.original_name = actorDTO.getOriginal_name();
-        this.media_type = getMedia_type();
+       // this.media_type = getMedia_type();
         this.adult = actorDTO.isAdult();
         this.character = actorDTO.getBiography();
         this.profile_path = actorDTO.getProfilePath();
 
-        //this.gender = actorDTO.getGender();
+        this.gender = actorDTO.getGender();
         this.imdbId = actorDTO.getImdbId();
 
-        //this.popularity = getPopularity();
+        this.popularity = getPopularity();
     }
 
 

@@ -6,6 +6,7 @@ import dat.config.HibernateConfig;
 import dat.daos.MovieDAO;
 import dat.entities.Movie;
 import dat.services.ActorService;
+import dat.services.DirectorService;
 import dat.services.MovieService;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -26,6 +27,8 @@ public class Main {
             Set<MovieDTO> movies = dao.getAllMovies();
 
             ActorService.fillDBWithActors(movies);
+
+            DirectorService.fillDBWithDirectors(movies);
 
 
             /*

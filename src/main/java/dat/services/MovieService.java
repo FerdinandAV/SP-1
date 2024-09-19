@@ -146,7 +146,7 @@ public class MovieService {
                 throw new RuntimeException(e);
             }
         }
-
+        executor.shutdown();
         MovieDAO.createMovies(movieDTOS);
 
         return movieDTOS;
