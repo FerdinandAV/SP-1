@@ -1,8 +1,10 @@
 package dat.daos;
 
+import dat.DTO.ActorDTO;
 import dat.DTO.DirectorDTO;
 import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
+import dat.entities.Actor;
 import dat.entities.Director;
 import dat.DTO.DirectorDTO;
 import dat.entities.Movie;
@@ -82,6 +84,20 @@ public class DirectorDAO {
 
             query.getResultList().forEach((movie) -> moviesDTOS.add(new MovieDTO(movie)));
             return moviesDTOS;
+        }
+    }
+
+    public DirectorDTO findDirectorByTMDBID(Long tmdb_id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Director> query = em.createQuery("SELECT d FROM Director d WHERE d.imdbId = :tmdb_id", Director.class);
+            query.setParameter("tmdb_id", tmdb_id);
+            if (query.getResultList().isEmpty()) {
+                throw new RuntimeException("Director not found with TMDB ID: " + tmdb_id);
+            }
+            else {
+                Director result = query.getSingleResult();
+                return new DirectorDTO(result);
+            }
         }
     }
 }

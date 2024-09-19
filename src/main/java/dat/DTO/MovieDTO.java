@@ -7,11 +7,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Actor;
 import dat.entities.Director;
+import dat.entities.Genre;
 import dat.entities.Movie;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -73,8 +75,32 @@ public class MovieDTO {
     @JsonSetter("vote_count")
     private Integer vote_count;
 
-    /*private List<Actor> actors;
-    private Director director;*/
+    @JsonIgnore
+    private List<ActorDTO> actors;
+
+    /*public void addActor(ActorDTO actorDTO){
+        if (actors == null){
+            actors = new ArrayList<>();
+        }
+        actors.add(actorDTO);
+    }*/
+
+    @JsonIgnore
+    private DirectorDTO director;
+
+    /*public void setDirector(DirectorDTO directorDTO){
+        this.director = directorDTO;
+    }*/
+
+    @JsonIgnore
+    private List<Genre> genres;
+
+    /*public void addGenre(Genre genre){
+        if (genres == null){
+            genres = new ArrayList<>();
+        }
+        genres.add(genre);
+    }*/
 
     // Constructor to convert Movie to MovieDTO
 

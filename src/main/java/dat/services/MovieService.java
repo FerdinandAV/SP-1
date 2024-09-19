@@ -1,11 +1,17 @@
 package dat.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dat.DTO.ActorDTO;
+import dat.DTO.DirectorDTO;
+import dat.DTO.GenreDTO;
 import dat.DTO.MovieDTO;
+import dat.daos.ActorDAO;
+import dat.daos.DirectorDAO;
+import dat.daos.GenreDAO;
 import dat.daos.MovieDAO;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.URI;
@@ -104,21 +110,7 @@ public class MovieService {
         return movies;
     }
 
-    public static List<MovieDTO> FillDBUpLast5yearsDanish(int totalPages) throws IOException, InterruptedException {
-        List<MovieDTO> movieDTOS = new ArrayList<>();
-
-        // Fetch all movies from the last 5 years
-        for (int page = 1; page <= totalPages; page++) {
-            List<MovieDTO> movies = fetchAllMovies(page);
-            System.out.println("Movies fetched from page " + page + ": " + movies.size());
-            movieDTOS.addAll(movies);
-        }
-        MovieDAO.createMovies(movieDTOS);
-
-        return movieDTOS;
-    }
-
-    public static List<MovieDTO> FillDBUpLast5yearsDanish2(int totalPages) throws IOException, InterruptedException {
+    public static void FillDBUpLast5yearsDanish2(int totalPages) throws IOException, InterruptedException {
         List<MovieDTO> movieDTOS = new ArrayList<>();
 
         ExecutorService executor = Executors.newFixedThreadPool(6);
@@ -147,9 +139,114 @@ public class MovieService {
             }
         }
 
+        executor.shutdown();
+
         MovieDAO.createMovies(movieDTOS);
 
-        return movieDTOS;
+    }
+
+    public static void addActorsAndDirectorsForMovies(List<MovieDTO> movieDTOS) throws IOException, InterruptedException {
+        MovieDAO movieDAO = new MovieDAO();
+        ActorDAO actorDAO = new ActorDAO();
+        DirectorDAO directorDAO = new DirectorDAO();
+        for (MovieDTO movieDTO : movieDTOS) {
+
+            // Build the request URL to fetch actors based on the movie ID and page
+            String url = "https://api.themoviedb.org/3/movie/" + movieDTO.getTmdb_id() + "/credits" + "?api_key=" + API_KEY;
+
+            // Create an HTTP client
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest
+                    .newBuilder()
+                    .uri(URI.create(url))
+                    .GET()
+                    .build();
+
+            // Send the HTTP request
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Log the response body for debugging purposes
+            System.out.println("API Response: " + response.body());
+
+            // Parse the response
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            JsonNode rootNode = objectMapper.readTree(response.body());
+
+            // Get cast node
+            JsonNode castNode = rootNode.get("cast");
+
+            List<ActorDTO> actorDTOS = new ArrayList<>();
+            DirectorDTO directorDTO = null;
+
+            boolean directorFound = false;
+
+            for (int i = 0; i < Math.min(20, castNode.size()); i++) {
+                JsonNode actorNode = castNode.get(i);
+                //Check if the cast is an actor
+
+                String text = String.valueOf(actorNode.get("known_for_department"));
+
+                if (text.contains("Acting")) {
+                    Long id = actorNode.get("id").asLong();
+                    actorDTOS.add(actorDAO.findActorByTMDBID(id));
+                }
+
+                if (text.contains("Directing") && !directorFound) {
+                    Long id = actorNode.get("id").asLong();
+                    //directorDTO = directorDAO.findDirectorByTMDBID(id);
+                    directorFound = true;
+                }
+            }
+
+            movieDAO.addActorsToMovie(movieDTO, actorDTOS);
+            //movieDAO.addDirectorToMovie(movieDTO, directorDTO);
+
+        }
+    }
+
+    public static void addGenresToMovies(List<MovieDTO> movieDTOS) throws IOException, InterruptedException {
+        MovieDAO movieDAO = new MovieDAO();
+        GenreDAO genreDAO = new GenreDAO();
+
+        for (MovieDTO movieDTO : movieDTOS) {
+
+            // Build the request URL to fetch actors based on the movie ID and page
+            String url = "https://api.themoviedb.org/3/movie/" + movieDTO.getTmdb_id() + "?api_key=" + API_KEY;
+
+            // Create an HTTP client
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest
+                    .newBuilder()
+                    .uri(URI.create(url))
+                    .GET()
+                    .build();
+
+            // Send the HTTP request
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Log the response body for debugging purposes
+            System.out.println("API Response: " + response.body());
+
+            // Parse the response
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(response.body());
+
+            // Get cast node
+            JsonNode genresNode = rootNode.get("genres");
+
+            List<GenreDTO> genreDTOS = new ArrayList<>();
+
+            for (int i = 0; i < Math.min(20, genresNode.size()); i++) {
+                JsonNode genreNode = genresNode.get(i);
+                Long id = genreNode.get("id").asLong();
+                genreDTOS.add(genreDAO.findGenreByTMDBID(id));
+            }
+
+            movieDAO.addGenresToMovie(movieDTO, genreDTOS);
+
+        }
+
     }
 }
 
