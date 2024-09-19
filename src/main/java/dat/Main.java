@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-            List<MovieDTO> movieDTOS = MovieService.FillDBUpLast5yearsDanish(58);
+            List<MovieDTO> movieDTOS = MovieService.FillDBUpLast5yearsDanish2(58);
             System.out.println("Movies added to DB: " + movieDTOS.size());
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -84,8 +84,6 @@ public class MovieDAO {
             existingMovie.setVote_count(movieDTO.getVote_count());
             existingMovie.setVideo(movieDTO.isVideo());
 
-            System.out.println(existingMovie);
-
             //Update movie
             Movie updatedMovie = em.merge(existingMovie);
             em.getTransaction().commit();
