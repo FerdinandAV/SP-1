@@ -47,6 +47,7 @@ public class Actor {
     private double popularity;*/
 
 
+    // Constructor to create an Actor object from an ActorDTO object
     public Actor(ActorDTO actorDTO) {
         this.id = actorDTO.getId();
         this.name = actorDTO.getName();

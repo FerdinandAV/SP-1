@@ -13,13 +13,14 @@ import java.net.http.HttpResponse;
 
 public class ActorService {
 
-    public static final String API_KEY = System.getenv("API_KEY");
-    private static final String BASE_URL_ACTOR = "https://api.themoviedb.org/3/movie/{movie_id}/credits";
+    public static final String API_KEY = System.getenv("API_KEY"); // Getting API key from the environment variables
+    private static final String BASE_URL_ACTOR = "https://api.themoviedb.org/3/movie/{movie_id}/credits"; // URL for fetching popular actors
 
     public static void FillDBUpWithActors() throws Exception {
         // Build the request URL to fetch popular actors
         String url = BASE_URL_ACTOR + "page=1&api_key=" + API_KEY;
 
+        // Create an HTTP client
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
                 .newBuilder()
@@ -44,7 +45,7 @@ public class ActorService {
             JsonNode actorNode = resultsNode.get(i);
             ActorDTO actorDTO = objectMapper.treeToValue(actorNode, ActorDTO.class);
 
-            // Save the actor to your database using ActorDAO
+            // Saving the actor to the database using ActorDAO
             ActorDAO.createActor(actorDTO);
         }
     }

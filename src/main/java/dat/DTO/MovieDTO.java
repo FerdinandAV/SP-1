@@ -21,6 +21,7 @@ import java.util.List;
 @ToString
 @Builder
 
+// Annotation to ignore unknown properties in the JSON file
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieDTO {
     /*@JsonSetter("backdrop_path")
@@ -74,6 +75,8 @@ public class MovieDTO {
 
     /*private List<Actor> actors;
     private Director director;*/
+
+    // Constructor to convert Movie to MovieDTO
 
     public MovieDTO(Movie movie) {
         this.id = movie.getId();
