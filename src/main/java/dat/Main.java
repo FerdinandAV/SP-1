@@ -9,11 +9,13 @@ import dat.services.ActorService;
 import dat.services.MovieService;
 import jakarta.persistence.EntityManagerFactory;
 
+
 import java.io.IOException;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+
 
         try {
 
@@ -45,5 +47,6 @@ public class Main {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
     }
 }

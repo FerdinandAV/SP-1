@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -14,8 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Entity
-
-@Table(name="movies")
+@Table(name = "movies")
 public class Movie {
 
     @Id
@@ -42,9 +40,6 @@ public class Movie {
     @Column(nullable = false)
     private String original_language;
 
-    /*@Column(length = 512)
-    private String backdrop_path;*/
-
     @Column(length = 512)
     private String poster_path;
 
@@ -60,34 +55,25 @@ public class Movie {
     @Column(nullable = false)
     private boolean video;
 
-    /*@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "director_id")
     private Director director;
 
     @ManyToMany
     @JoinTable(
-            //@JoinTable annotation defines
-            // the intermediary table movie_genre that connects movies and genres.
             name = "movie_actor",
-
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id")
     )
     private List<Actor> actors;
 
-
-
     @ManyToMany
     @JoinTable(
-            //The @JoinTable annotation defines the name of the intermediary table,
-            // movie_actor, which connects the movies and actors tables.
             name = "movie_genre",
-
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-
-    private List<Genre> genres;*/
+    private List<Genre> genres;
 
     // Constructor to create a Movie object from a MovieDTO object
     public Movie(MovieDTO movieDTO) {
@@ -99,16 +85,13 @@ public class Movie {
         this.overview = movieDTO.getOverview();
         this.adult = movieDTO.isAdult();
         this.original_language = movieDTO.getOriginal_language();
-        //this.backdrop_path = movieDTO.getBackdrop_path();
         this.poster_path = movieDTO.getPoster_path();
         this.popularity = movieDTO.getPopularity();
         this.vote_average = movieDTO.getVote_average();
         this.vote_count = movieDTO.getVote_count();
-        /*this.director = movieDTO.getDirector(); // No need to cast
-        this.actors = movieDTO.getActors();*/
     }
-
 }
+
 
 
 

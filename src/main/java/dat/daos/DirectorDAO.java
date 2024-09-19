@@ -4,9 +4,12 @@ import dat.DTO.DirectorDTO;
 import dat.config.HibernateConfig;
 import dat.entities.Director;
 import dat.DTO.DirectorDTO;
+import dat.entities.Movie;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
+
+import java.util.List;
 
 public class DirectorDAO {
 
@@ -69,4 +72,12 @@ public class DirectorDAO {
         }
     }
 
+    public List<MovieDTO> findMoviesByDirectorId(int Id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN Director d WHERE d.id = :directorId", Movie.class);
+            query.setParameter("directorId", Id);
+            List<MovieDTO> moviesDTOs = query.getResultList().forEach((movie) -> new MovieDTO(movie));
+            return moviesDTOs;
+        }
+    }
 }

@@ -19,6 +19,7 @@ import java.util.List;
 // Annotation to ignore unknown properties in the JSON file
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ActorDTO {
+
     @JsonSetter("adult")
     private boolean adult;
 

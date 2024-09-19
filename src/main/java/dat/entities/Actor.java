@@ -14,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
+@Builder
 @Entity
 @Table(name="actors")
 public class Actor {
@@ -55,13 +55,15 @@ public class Actor {
     public Actor(ActorDTO actorDTO) {
         this.id = actorDTO.getId();
         this.name = actorDTO.getName();
-        this.original_name = getOriginal_name();
+        this.original_name = actorDTO.getOriginal_name();
         this.media_type = getMedia_type();
         this.adult = actorDTO.isAdult();
         this.character = actorDTO.getBiography();
         this.profile_path = actorDTO.getProfilePath();
-        //this.gender = getGender();
+
+        this.gender = actorDTO.getGender();
         this.imdbId = actorDTO.getImdbId();
+
         //this.popularity = getPopularity();
     }
 

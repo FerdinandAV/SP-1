@@ -2,6 +2,7 @@ package dat.daos;
 
 import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
+import dat.entities.Actor;
 import dat.entities.Movie;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class MovieDAO {
 
-    static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
+    static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
 
     public static MovieDTO createMovie(MovieDTO movieDTO) {
         Movie movie = new Movie(movieDTO);
@@ -216,4 +217,24 @@ public class MovieDAO {
         }
     }
 
+    public void addActorToMovie(int movieId, int actorId) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            Movie movie = em.find(Movie.class, movieId);
+            Actor actor = em.find(Actor.class, actorId);
+            if (movie != null && actor != null) {
+                if (movie.getActors() == null) {
+                    movie.setActors(new ArrayList<>()); // Initialize the list if null
+                }
+                if (!movie.getActors().contains(actor)) {
+                    movie.getActors().add(actor);
+                    em.merge(movie);
+                }
+            } else {
+                System.out.println("Movie or Actor not found with IDs: " + movieId + ", " + actorId);
+            }
+            em.getTransaction().commit();
+        }
+    }
 }
+
