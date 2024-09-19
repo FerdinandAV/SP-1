@@ -1,5 +1,6 @@
 package dat.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Actor;
@@ -15,10 +16,13 @@ import java.util.List;
 @ToString
 @Builder
 
+// Annotation to ignore unknown properties in the JSON file
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ActorDTO {
+
     @JsonSetter("adult")
     private boolean adult;
+
 
     @JsonSetter("also_known_as")
     private List<String> alsoKnownAs;
@@ -38,10 +42,10 @@ public class ActorDTO {
     @JsonSetter("homepage")
     private String homepage;
 
-    @JsonSetter("id")
+    @JsonIgnore
     private int id;
 
-    @JsonSetter("imdb_id")
+    @JsonSetter("id")
     private String imdbId;
 
     @JsonSetter("known_for_department")
@@ -61,6 +65,8 @@ public class ActorDTO {
 
     @JsonSetter("profile_path")
     private String profilePath;
+
+    // Constructor to convert Actor to a ActorDTO
 
     public ActorDTO(Actor actor) {
         this.id = actor.getId();
