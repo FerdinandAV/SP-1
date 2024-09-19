@@ -1,6 +1,7 @@
 package dat.daos;
 
 import dat.DTO.ActorDTO;
+import dat.DTO.MovieDTO;
 import dat.entities.Actor;
 import dat.entities.Movie;
 import jakarta.persistence.EntityManager;
@@ -87,7 +88,7 @@ public class ActorDAOTest {
         em.close();
 
         // Call the method
-        List<Movie> movies = actorDAO.findMoviesByActorId(actor.getId());
+        List<MovieDTO> movies = actorDAO.findMoviesByActorId(actor.getId());
 
         // Verify results
         assertNotNull(movies, "Movies list should not be null");
