@@ -2,6 +2,7 @@ package dat.entities;
 
 
 import dat.DTO.ActorDTO;
+import dat.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -75,7 +76,7 @@ public class Actor {
         this.adult = actorDTO.isAdult();
         this.character = actorDTO.getBiography();
         this.profile_path = actorDTO.getProfilePath();
-        //this.gender = actorDTO.getGender();
+        this.gender = actorDTO.getGender();
         this.imdbId = actorDTO.getImdbId();
         //this.popularity = getPopularity();
     }

@@ -172,14 +172,27 @@ public class MovieService {
 
             // Get cast node
             JsonNode castNode = rootNode.get("cast");
+            JsonNode crewNode = rootNode.get("crew");
 
             List<ActorDTO> actorDTOS = new ArrayList<>();
             DirectorDTO directorDTO = null;
 
             boolean directorFound = false;
 
-            for (int i = 0; i < Math.min(20, castNode.size()); i++) {
+            for (int i = 0; i < castNode.size(); i++) {
                 JsonNode actorNode = castNode.get(i);
+                //Check if the cast is an actor
+
+                String text = String.valueOf(actorNode.get("known_for_department"));
+
+                if (text.contains("Acting")) {
+                    Long id = actorNode.get("id").asLong();
+                    actorDTOS.add(actorDAO.findActorByTMDBID(id));
+                }
+            }
+
+            for (int i = 0; i < crewNode.size(); i++) {
+                JsonNode actorNode = crewNode.get(i);
                 //Check if the cast is an actor
 
                 String text = String.valueOf(actorNode.get("known_for_department"));
@@ -191,13 +204,13 @@ public class MovieService {
 
                 if (text.contains("Directing") && !directorFound) {
                     Long id = actorNode.get("id").asLong();
-                    //directorDTO = directorDAO.findDirectorByTMDBID(id);
+                    directorDTO = directorDAO.findDirectorByTMDBID(id);
                     directorFound = true;
                 }
             }
 
             movieDAO.addActorsToMovie(movieDTO, actorDTOS);
-            //movieDAO.addDirectorToMovie(movieDTO, directorDTO);
+            movieDAO.addDirectorToMovie(movieDTO, directorDTO);
 
         }
     }

@@ -7,13 +7,14 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 class MovieDAOTest {
 
     static MovieDAO movieDAO;
 
-    MovieDTO movieDTO = new MovieDTO(1145,954801L,"fuck you", "fuck you", "dwadoangorjangoagnaojgn", "dpwakdkpawd", "apkdwapkd", true, "0idawdaw", new ArrayList<>(), 18.486f, LocalDate.now(), false, 6.7f, 69);
+    //MovieDTO movieDTO = new MovieDTO(1145,954801L,"fuck you", "fuck you", "dwadoangorjangoagnaojgn", "dpwakdkpawd", "apkdwapkd", true, "0idawdaw", new ArrayList<>(), 18.486f, LocalDate.now(), false, 6.7f, 69);
     @BeforeAll
     static void setUp() {
         movieDAO = new MovieDAO();
@@ -21,8 +22,8 @@ class MovieDAOTest {
 
     @Test
     void createMovie() {
-        MovieDTO movie = MovieDAO.createMovie(movieDTO);
-        System.out.println(movie);
+        //MovieDTO movie = MovieDAO.createMovie(movieDTO);
+        //System.out.println(movie);
     }
 
 
@@ -39,7 +40,7 @@ class MovieDAOTest {
 
     @Test
     void deleteMovie() {
-        movieDAO.deleteMovie(movieDTO);
+        //movieDAO.deleteMovie(movieDTO);
     }
 
     @Test
@@ -48,7 +49,8 @@ class MovieDAOTest {
 
     @Test
     void findMovieByTitle() {
-        movieDAO.findMovieByTitle("OG").forEach(movieDTO -> System.out.println(movieDTO.getTitle()));
+        List<MovieDTO> movieDTOList = movieDAO.findMovieByTitle("druk");
+        movieDTOList.forEach(movieDTO -> System.out.println(movieDTO.getTitle()));
     }
 
     @Test

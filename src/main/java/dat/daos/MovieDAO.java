@@ -117,7 +117,7 @@ public class MovieDAO {
     }
 
     public List<MovieDTO> findMovieByTitle(String title) {
-        List<MovieDTO> movieDTOS = new ArrayList<>();
+        List<MovieDTO> movieDTOS;
 
         try (EntityManager em = emf.createEntityManager()) {
             // Convert DTO to Entity
@@ -127,9 +127,14 @@ public class MovieDAO {
 
             // Maps movies to MovieDTOs, filters by title and adds them to a list
             movieDTOS = movies.stream()
-                    .filter(movie -> movie.getTitle().toLowerCase().contains(title.toLowerCase()))
+                    .filter(movie -> movie.getTitle().toLowerCase().contains(title.toLowerCase()) || movie.getOriginal_title().toLowerCase().contains(title.toLowerCase()))
                     .map(movie -> new MovieDTO(movie))
                     .collect(Collectors.toList());
+
+            if (movieDTOS.isEmpty()) {
+                System.out.println("There was no movies with this title");
+            }
+
         }
         return movieDTOS;
     }
@@ -268,20 +273,27 @@ public class MovieDAO {
     }
 
     public void addDirectorToMovie(MovieDTO movieDTO, DirectorDTO directorDTO) {
-        try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            Movie movie = em.find(Movie.class, movieDTO.getId());
-            Director director = em.find(Director.class, directorDTO.getId());
-            if (movie != null && director != null) {
-                if (movie.getDirector() != null) {
-                    movie.getDirector().removeMovie(movie);
+
+        if (directorDTO == null) {
+            System.out.println("There was no director on this movie:" + movieDTO.getTitle());
+        }
+        else {
+
+            try (EntityManager em = emf.createEntityManager()) {
+                em.getTransaction().begin();
+                Movie movie = em.find(Movie.class, movieDTO.getId());
+                Director director = em.find(Director.class, directorDTO.getId());
+                if (movie != null && director != null) {
+                    if (movie.getDirector() != null) {
+                        movie.getDirector().removeMovie(movie);
+                    }
+                    movie.setDirector(director);
+                    em.merge(movie);
+                } else {
+                    System.out.println("Movie or Director not found with IDs: " + movieDTO.getId() + ", " + directorDTO.getId());
                 }
-                movie.setDirector(director);
-                em.merge(movie);
-            } else {
-                System.out.println("Movie or Director not found with IDs: " + movieDTO.getId() + ", " + directorDTO.getId());
+                em.getTransaction().commit();
             }
-            em.getTransaction().commit();
         }
     }
 
