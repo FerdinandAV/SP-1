@@ -24,6 +24,9 @@ public class Director {
    private Integer id;
 
    @Column(nullable = true)
+   private String imdbId;
+  
+   @Column(nullable = true)
    private String name;
 
    @Column(nullable = true)
@@ -59,6 +62,7 @@ public class Director {
       this.adult = directorDTO.isAdult();
       this.profile_path = directorDTO.getProfilePath();
       this.gender = getGender();
+      this.imdbId = directorDTO.getImdbId();
       //this.popularity = getPopularity();
    }
 

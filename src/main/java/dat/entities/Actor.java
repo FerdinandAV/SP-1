@@ -32,10 +32,9 @@ public class Actor {
     @Column(nullable = true)
     private String original_name;
 
-    /*
-    @Column(nullable = false)
-    private String media_type;
-    */
+    /*@Column(nullable = true)
+    private String media_type;*/
+
     @Column(nullable = true)
     private boolean adult;
 
@@ -45,27 +44,28 @@ public class Actor {
     @Column(nullable = true)
     private String profile_path;
 
-    /*@Column(nullable = true)
-    private Gender gender;*/
+    @Column(nullable = false)
+    private Gender gender;
 
-    /*@Column(nullable = false)
-    private double popularity;*/
+    @Column(nullable = false)
+    private double popularity;
 
 
     // Constructor to create an Actor object from an ActorDTO object
     public Actor(ActorDTO actorDTO) {
         this.id = actorDTO.getId();
         this.name = actorDTO.getName();
+
         this.original_name = actorDTO.getOriginal_name() != null ? actorDTO.getOriginal_name() : "Unknown"; // Ensure non-null value
         // this.media_type = getMedia_type();
         this.adult = actorDTO.isAdult();
         this.character = actorDTO.getBiography();
         this.profile_path = actorDTO.getProfilePath();
 
-        //this.gender = actorDTO.getGender();
+        this.gender = actorDTO.getGender();
         this.imdbId = actorDTO.getImdbId();
 
-        //this.popularity = getPopularity();
+        this.popularity = getPopularity();
     }
 
 
