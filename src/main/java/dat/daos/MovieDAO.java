@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class MovieDAO {
 
-    private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
+    static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
 
     public static MovieDTO createMovie(MovieDTO movieDTO) {
         Movie movie = new Movie(movieDTO);
