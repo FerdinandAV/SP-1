@@ -31,8 +31,7 @@ public class DirectorDAO {
             query.setParameter("name", director.getName());
             if (query.getResultList().isEmpty()) {
                 em.persist(director);
-            }
-            else {
+            } else {
                 System.out.println("Director already exists");
                 director = query.getSingleResult();
             }
@@ -100,10 +99,16 @@ public class DirectorDAO {
         }
     }
 
-    public List<MovieDTO> findMoviesByDirectorId(int Id) {
+    public List<MovieDTO> findMoviesByDirectorId(int directorId) {
         try (EntityManager em = emf.createEntityManager()) {
-            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN Director d WHERE d.id = :directorId", Movie.class);
-            query.setParameter("directorId", Id);
+            // Retrieve the director by ID
+            Director director = em.find(Director.class, directorId);
+            if (director == null) {
+                throw new RuntimeException("Director not found with this ID" + directorId);
+            }
+            // Retrieve the movies by director ID
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.director d WHERE d.id = :directorId", Movie.class);
+            query.setParameter("directorId", directorId);
             List<MovieDTO> moviesDTOS = new ArrayList<>();
 
             query.getResultList().forEach((movie) -> moviesDTOS.add(new MovieDTO(movie)));

@@ -23,37 +23,37 @@ public class Movie {
 
     private Long tmdb_id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String original_title;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate release_date;
 
-    @Column(nullable = false, length = 1024)
+    @Column(nullable = true, length = 1024)
     private String overview;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private boolean adult;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String original_language;
 
     @Column(length = 512)
     private String poster_path;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private float popularity;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private float vote_average;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer vote_count;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private boolean video;
 
     @ManyToOne

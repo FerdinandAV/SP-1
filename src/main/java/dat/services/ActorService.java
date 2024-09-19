@@ -50,10 +50,7 @@ public class ActorService {
 
         //Return the fetched actor
         return actorDTO;
-
     }
-
-
 
     public static Set<Long> fetchAllActorsID(Long movieID) throws Exception {
         // Build the request URL to fetch actors based on the movie ID and page
@@ -132,7 +129,6 @@ public class ActorService {
                 throw new RuntimeException(e);
             }
         }
-
 
         Set<Callable<ActorDTO>> actorTasks = new HashSet<>();
 

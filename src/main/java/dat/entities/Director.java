@@ -26,7 +26,7 @@ public class Director {
 
    @Column(nullable = true)
    private String imdbId;
-
+  
    @Column(nullable = true)
    private String name;
 

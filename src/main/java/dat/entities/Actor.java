@@ -70,8 +70,8 @@ public class Actor {
     public Actor(ActorDTO actorDTO) {
         this.id = actorDTO.getId();
         this.name = actorDTO.getName();
-        this.original_name = actorDTO.getOriginal_name();
-        //this.media_type = getMedia_type();
+        this.original_name = actorDTO.getOriginal_name() != null ? actorDTO.getOriginal_name() : "Unknown"; // Ensure non-null value
+        // this.media_type = getMedia_type();
         this.adult = actorDTO.isAdult();
         this.character = actorDTO.getBiography();
         this.profile_path = actorDTO.getProfilePath();
