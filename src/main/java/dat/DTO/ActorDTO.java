@@ -74,7 +74,9 @@ public class ActorDTO {
         this.original_name = actor.getOriginal_name();
         this.adult = actor.isAdult();
         this.profilePath = actor.getProfile_path();
-        this.gender = actor.getGender();
+        // this.gender = actor.getGender();
         //this.popularity = actor.getPopularity();
     }
+
+
 }

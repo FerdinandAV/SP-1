@@ -10,6 +10,8 @@ import dat.DTO.ActorDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,8 +63,7 @@ public class ActorDAO {
                 query.setParameter("imdb_id", actorDTO.getImdbId());
                 if (query.getResultList().isEmpty()) {
                     em.merge(actor);
-                }
-                else {
+                } else {
                     System.out.println("Actor already exists");
                 }
             }
@@ -94,10 +95,6 @@ public class ActorDAO {
             em.remove(em.find(Actor.class, actor.getId()));
             em.getTransaction().commit();
         }
-
-
-
-
     }
 
     public ActorDTO findActor(int id) {
@@ -119,55 +116,14 @@ public class ActorDAO {
             // Retrieve movies for the actor
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.actors a WHERE a.id = :actorId", Movie.class);
             query.setParameter("actorId", actorId);
-            List<MovieDTO> moviesDTOs = query.getResultList().forEach((movie) -> new MovieDTO(movie));
-            return moviesDTOs;
+            List<MovieDTO> moviesDTOS = new ArrayList<>();
+
+            query.getResultList().forEach((movie) -> moviesDTOS.add(new MovieDTO(movie)));
+            return moviesDTOS;
         }
     }
 
-    public ActorDTO getMoviesByActor(int id) {
-        try (EntityManager em = emf.createEntityManager()) {
-            // Convert DTO to Entity
-            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.actors a WHERE a.id = :actorId", Movie.class);
-            // Query to select movies by actor id
-            query.setParameter("actorId", id);
-
-            // Get the list of movies
-            List<Movie> movies = query.getResultList();
-
-            // Get the actor by id
-            Actor actor = em.find(Actor.class, id);
-
-            // Convert the list of movies to a list of movieDTOs and return the ActorDTO with the actor and the list of corresponding movies
-            List<MovieDTO> movieDTOs = movies.stream()
-                    .map(MovieDTO::new)
-                    .collect(Collectors.toList());
-
-            return new ActorDTO(actor, movieDTOs);
-        }
-    }
-
-    public ActorDTO getMoviesByDirector(int id) {
-        try (EntityManager em = emf.createEntityManager()) {
-            // Convert DTO to Entity
-            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.director a WHERE a.id = :directorId", Movie.class);
-            // Query to select movies by director id
-            query.setParameter("directorId", id);
-
-            // Get the list of movies
-            List<Movie> movies = query.getResultList();
 
 
-            // Get the director by id
-            Director director = em.find(Director.class, id);
-
-            // Convert the list of movies to a list of movieDTOs and return the DirectorDTO with the director and the list of corresponding movies
-            List<MovieDTO> movieDTOs = movies.stream()
-                    .map(MovieDTO::new)
-                    .collect(Collectors.toList());
-
-            return new DirectorDTO(director, movieDTOs);
-
-        }
-    }
 
 }
