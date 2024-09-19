@@ -76,7 +76,8 @@ public class DirectorDAO {
         try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN Director d WHERE d.id = :directorId", Movie.class);
             query.setParameter("directorId", Id);
-            return query.getResultList();
+            List<MovieDTO> moviesDTOs = query.getResultList().forEach((movie) -> new MovieDTO(movie));
+            return moviesDTOs;
         }
     }
 }
