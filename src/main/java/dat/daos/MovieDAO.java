@@ -71,6 +71,7 @@ public class MovieDAO {
                 throw new IllegalArgumentException("Movie not found with id: " + movieDTO.getId());
             }
 
+            // Set new values
             existingMovie.setTmdb_id(movieDTO.getTmdb_id());
             existingMovie.setTitle(movieDTO.getTitle());
             existingMovie.setOriginal_title(movieDTO.getOriginal_title());
@@ -88,6 +89,7 @@ public class MovieDAO {
             Movie updatedMovie = em.merge(existingMovie);
             em.getTransaction().commit();
 
+            // return movie with new values
             return new MovieDTO(updatedMovie);
         }
     }
@@ -116,9 +118,12 @@ public class MovieDAO {
         List<MovieDTO> movieDTOS = new ArrayList<>();
 
         try (EntityManager em = emf.createEntityManager()) {
+            // Convert DTO to Entity
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+            // Query to retrive all movies
             List<Movie> movies = query.getResultList();
 
+            // Maps movies to MovieDTOs, filters by title and adds them to a list
             movieDTOS = movies.stream()
                     .filter(movie -> movie.getTitle().toLowerCase().contains(title.toLowerCase()))
                     .map(movie -> new MovieDTO(movie))
@@ -129,9 +134,12 @@ public class MovieDAO {
 
     public double getTotalAverageRating() {
         try (EntityManager em = emf.createEntityManager()) {
+            // Convert DTO to Entity
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+            // Query to retrive all movies
             List<Movie> movies = query.getResultList();
 
+            // Maps movies to MovieDTOs, finds movies with Vote_count higher than 20, maps to double and calculates average
             double number = movies.stream()
                     .filter(movie -> movie.getVote_count() > 20)
                     .mapToDouble(Movie::getVote_average)
@@ -147,8 +155,12 @@ public class MovieDAO {
 
     public List<MovieDTO> getTopTenBestMovies() {
         try (EntityManager em = emf.createEntityManager()) {
+            // Convert DTO to Entity
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+            // Query to retrive all movies
             List<Movie> movies = query.getResultList();
+
+            // Maps movies to MovieDTOs, sorts by vote_average and reversed, so they go from highest to lowest, filters by vote_count higher than 50, limits to 10 and adds them to a list
             List<MovieDTO> movieDTOS = movies.stream()
                     .sorted(Comparator.comparing(Movie::getVote_average).reversed())
                     .filter(movie -> movie.getVote_count() > 50)
@@ -161,8 +173,11 @@ public class MovieDAO {
 
     public List<MovieDTO> getTopTenWorstMovies() {
         try (EntityManager em = emf.createEntityManager()) {
+            // Convert DTO to Entity
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m ORDER BY m.vote_average ASC", Movie.class);
+            // Query to retrive all movies and orders them by vote_average in ascending order
             List<Movie> movies = query.getResultList();
+            // Maps movies to MovieDTOs, filters by vote_count higher than 50, limits to 10 and adds them to a list
             List<MovieDTO> movieDTOS = movies.stream()
                     .filter(movie -> movie.getVote_count() > 50)
                     .limit(10)
@@ -174,10 +189,12 @@ public class MovieDAO {
 
     public List<MovieDTO> getTopTenMostPopularMovies() {
         try (EntityManager em = emf.createEntityManager()) {
+            // Convert DTO to Entity
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m ORDER BY m.popularity DESC", Movie.class);
+            // Query to retrive all movies and orders them by popularity in descending order
             List<Movie> movies = query.getResultList();
+            // Maps movies to MovieDTOs, limits to 10 and adds them to a list
             List<MovieDTO> movieDTOS = movies.stream()
-                    .filter(movie -> movie.getVote_count() > 50)
                     .limit(10)
                     .map(movie -> new MovieDTO(movie))
                     .collect(Collectors.toList());

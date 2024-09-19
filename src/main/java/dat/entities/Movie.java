@@ -75,6 +75,7 @@ public class Movie {
     )
     private List<Genre> genres;
 
+    // Constructor to create a Movie object from a MovieDTO object
     public Movie(MovieDTO movieDTO) {
         this.id = movieDTO.getId();
         this.tmdb_id = movieDTO.getTmdb_id();
