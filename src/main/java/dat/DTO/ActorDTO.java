@@ -1,5 +1,6 @@
 package dat.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Actor;
@@ -21,6 +22,7 @@ public class ActorDTO {
     @JsonSetter("adult")
     private boolean adult;
 
+
     @JsonSetter("also_known_as")
     private List<String> alsoKnownAs;
 
@@ -39,10 +41,10 @@ public class ActorDTO {
     @JsonSetter("homepage")
     private String homepage;
 
-    @JsonSetter("id")
+    @JsonIgnore
     private int id;
 
-    @JsonSetter("imdb_id")
+    @JsonSetter("id")
     private String imdbId;
 
     @JsonSetter("known_for_department")
