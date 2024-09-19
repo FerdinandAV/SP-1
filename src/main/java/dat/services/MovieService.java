@@ -21,6 +21,7 @@ import java.util.List;
 public class MovieService {
 
     private static final String API_KEY = System.getenv("API_KEY");
+    private static final String BASE_URL_MOVIE = "https://api.themoviedb.org/3/movie/";
     private static final String BASE_URL_MOVIE_Danish = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_origin_country=DK";
 
     public static MovieDTO getMovieById(String id) throws Exception, InterruptedIOException {
