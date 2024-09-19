@@ -63,7 +63,8 @@ public class ActorDAO {
                 query.setParameter("imdb_id", actorDTO.getImdbId());
                 if (query.getResultList().isEmpty()) {
                     em.merge(actor);
-                } else {
+                }
+                else {
                     System.out.println("Actor already exists");
                 }
             }
@@ -95,6 +96,10 @@ public class ActorDAO {
             em.remove(em.find(Actor.class, actor.getId()));
             em.getTransaction().commit();
         }
+
+
+
+
     }
 
     public ActorDTO findActor(int id) {
@@ -123,7 +128,50 @@ public class ActorDAO {
         }
     }
 
+    /*public ActorDTO getMoviesByActor(int id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            // Convert DTO to Entity
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.actors a WHERE a.id = :actorId", Movie.class);
+            // Query to select movies by actor id
+            query.setParameter("actorId", id);
+
+            // Get the list of movies
+            List<Movie> movies = query.getResultList();
+
+            // Get the actor by id
+            Actor actor = em.find(Actor.class, id);
+
+            // Convert the list of movies to a list of movieDTOs and return the ActorDTO with the actor and the list of corresponding movies
+            List<MovieDTO> movieDTOs = movies.stream()
+                    .map(MovieDTO::new)
+                    .collect(Collectors.toList());
+
+            return new ActorDTO(actor, movieDTOs);
+        }
+    }
+
+    public ActorDTO getMoviesByDirector(int id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            // Convert DTO to Entity
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.director a WHERE a.id = :directorId", Movie.class);
+            // Query to select movies by director id
+            query.setParameter("directorId", id);
+
+            // Get the list of movies
+            List<Movie> movies = query.getResultList();
 
 
+            // Get the director by id
+            Director director = em.find(Director.class, id);
+
+            // Convert the list of movies to a list of movieDTOs and return the DirectorDTO with the director and the list of corresponding movies
+            List<MovieDTO> movieDTOs = movies.stream()
+                    .map(MovieDTO::new)
+                    .collect(Collectors.toList());
+
+            return new DirectorDTO(director, movieDTOs);
+
+        }
+    }*/
 
 }

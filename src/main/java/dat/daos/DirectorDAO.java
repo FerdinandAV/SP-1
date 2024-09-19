@@ -82,7 +82,6 @@ public class DirectorDAO {
 
             query.getResultList().forEach((movie) -> moviesDTOS.add(new MovieDTO(movie)));
             return moviesDTOS;
-
         }
     }
 }
