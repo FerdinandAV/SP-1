@@ -16,6 +16,7 @@ public class Main {
     public static void main(String[] args) {
 
         try {
+
             MovieService.FillDBUpLast5yearsDanish(58);
 
             Set<MovieDTO> movies = dao.getAllMovies();
@@ -23,12 +24,20 @@ public class Main {
             ActorService.fillDBWithActors(movies);
 
 
-            /*for (MovieDTO movieDTO : dao.getAllMovies()) {
+            /*
+            for (MovieDTO movieDTO : dao.getAllMovies()) {
                 List<ActorDTO> actorDTOS = ActorService.fillDBWithActors(movieDTO, 1);
                 System.out.println("Actors added to DB for movie ID " + movieDTO.getId() + ": " + actorDTOS.size());
             }
 
-            System.out.println("Movies added to DB: " + movieDTOS.size());*/
+            System.out.println("Movies added to DB: " + movieDTOS.size());
+            */
+
+            /*
+            List<MovieDTO> movieDTOS = MovieService.FillDBUpLast5yearsDanish2(58);
+            System.out.println("Movies added to DB: " + movieDTOS.size()); 
+            */
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

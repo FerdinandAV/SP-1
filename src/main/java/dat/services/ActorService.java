@@ -25,6 +25,7 @@ import static dat.services.MovieService.fetchAllMovies;
 
 public class ActorService {
 
+
     public static final String API_KEY = System.getenv("API_KEY");
     private static final String BASE_URL_ACTOR = "https://api.themoviedb.org/3/movie/";
     private static final String BASE_URL_SEARCH_ACTOR = "https://api.themoviedb.org/3/person/";
@@ -46,6 +47,7 @@ public class ActorService {
         // Log the response body for debugging purposes
         System.out.println("API Response: " + response.body());
 
+
         // Parse the response
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -63,6 +65,7 @@ public class ActorService {
         // Build the request URL to fetch actors based on the movie ID and page
         String url = BASE_URL_ACTOR + movieID + "/credits" + "?api_key=" + API_KEY;
 
+        // Create an HTTP client
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
                 .newBuilder()
@@ -150,6 +153,7 @@ public class ActorService {
             futuresActor = executor.invokeAll(actorTasks);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+
         }
 
         for (Future<ActorDTO> future : futuresActor) {

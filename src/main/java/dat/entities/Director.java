@@ -50,6 +50,7 @@ public class Director {
    /*@OneToMany(mappedBy = "director")
    private List<Movie> movies;*/
 
+   // Constructor to create a Director object from a DirectorDTO object
    public  Director(DirectorDTO directorDTO) {
       this.id = directorDTO.getId();
       this.name = directorDTO.getName();
