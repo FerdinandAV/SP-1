@@ -23,28 +23,28 @@ public class Director {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Integer id;
 
-   @Column(nullable = false)
+   @Column(nullable = true)
    private String name;
 
-   @Column(nullable = false)
+   @Column(nullable = true)
    private String original_name;
 
-   @Column(nullable = false)
+   @Column(nullable = true)
    private String media_type;
 
-   @Column(nullable = false)
+   @Column(nullable = true)
    private boolean adult;
 
    /*@Column(nullable = false)
    private double popularity;*/
 
-   @Column(nullable = false)
+   @Column(nullable = true)
    private Gender gender;
 
-   @Column(nullable = false)
+   @Column(nullable = true)
    private String known_for_department;
 
-   @Column(nullable = false)
+   @Column(nullable = true)
    private String profile_path;
 
    /*@OneToMany(mappedBy = "director")

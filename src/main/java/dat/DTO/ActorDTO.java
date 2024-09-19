@@ -71,7 +71,7 @@ public class ActorDTO {
     public ActorDTO(Actor actor) {
         this.id = actor.getId();
         this.name = actor.getName();
-        this.original_name = actor.getOriginal_name();
+        this.original_name = actor.getOriginal_name() != null ? actor.getOriginal_name() : "Unknown"; // Ensure non-null value
         this.adult = actor.isAdult();
         this.profilePath = actor.getProfile_path();
         //this.gender = actor.getGender();
