@@ -12,14 +12,16 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
 
+        MovieDAO dao = new MovieDAO();
 
         try {
 
-            MovieService.FillDBUpLast5yearsDanish(58);
+            MovieService.FillDBUpLast5yearsDanish2(2);
 
             Set<MovieDTO> movies = dao.getAllMovies();
 
