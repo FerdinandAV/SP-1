@@ -1,12 +1,11 @@
 package dat.services;
 
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dat.DTO.MovieDTO;
 import dat.daos.MovieDAO;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.URI;
@@ -20,12 +19,16 @@ import java.util.List;
 
 public class MovieService {
 
-    private static final String API_KEY = System.getenv("API_KEY");
+    public static final String API_KEY = System.getenv("API_KEY");
     private static final String BASE_URL_MOVIE = "https://api.themoviedb.org/3/movie/";
-    private static final String BASE_URL_MOVIE_Danish = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_origin_country=DK";
+    public static final String BASE_URL_MOVIE_Danish = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_origin_country=DK";
 
     public static MovieDTO getMovieById(String id) throws Exception, InterruptedIOException {
-        String url = BASE_URL_MOVIE_Danish + "&id=" + id + "&api_key=" + API_KEY;
+
+        // // Build the request URL with the movie ID and API key
+
+        String url = BASE_URL_MOVIE_Danish + id + "&page="+ "?api_key=" + API_KEY;
+
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
@@ -34,22 +37,20 @@ public class MovieService {
                 .GET()
                 .build();
 
-        // Send the HTTP request
+        // Now you Send the HTTP request
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // Check the status code
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("API request failed with status code: " + response.statusCode() + "\nResponse Body: " + response.body());
-        }
 
-        // Parse the response
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
         JsonNode rootNode = objectMapper.readTree(response.body());
+
         MovieDTO movie = objectMapper.treeToValue(rootNode, MovieDTO.class);
         return movie;
     }
+
+
 
     public static List<MovieDTO> fetchAllMovies(int page) throws IOException, InterruptedException {
         // Calculate dates for the last 5 years
@@ -77,24 +78,13 @@ public class MovieService {
         // Send the HTTP request
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // Check the status code
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("API request failed with status code: " + response.statusCode() + "\nResponse Body: " + response.body());
-        }
-
-        // Print the response body for debugging
-        System.out.println("API Response Body: " + response.body());
-
         // Parse the response
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         JsonNode rootNode = objectMapper.readTree(response.body());
 
-        // Check if the "results" field exists
+        // Assuming the response contains a field "results" with an array of movies
         JsonNode resultsNode = rootNode.get("results");
-        if (resultsNode == null) {
-            throw new RuntimeException("No 'results' field found in the response");
-        }
 
         List<MovieDTO> movies = new ArrayList<>();
 
