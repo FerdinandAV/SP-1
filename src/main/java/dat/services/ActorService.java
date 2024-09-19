@@ -77,12 +77,28 @@ public class ActorService {
 
         // Get cast node
         JsonNode castNode = rootNode.get("cast");
+        JsonNode crewNode = rootNode.get("crew");
 
         //Get all ids from the different actors
         Set<Long> ids = new HashSet<>();
 
-        for (int i = 0; i < Math.min(20, castNode.size()); i++) {
+        // Cast node
+        for (int i = 0; i < castNode.size(); i++) {
             JsonNode actorNode = castNode.get(i);
+            //System.out.println(actorNode.get("known_for_department"));
+            //Check if the cast is an actor
+
+            String text = String.valueOf(actorNode.get("known_for_department"));
+
+            if (text.contains("Acting")) {
+                Long id = actorNode.get("id").asLong();
+                ids.add(id);
+            }
+        }
+
+        // Crew node
+        for (int i = 0; i < crewNode.size(); i++) {
+            JsonNode actorNode = crewNode.get(i);
             //System.out.println(actorNode.get("known_for_department"));
             //Check if the cast is an actor
 

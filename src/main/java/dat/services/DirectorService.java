@@ -80,15 +80,31 @@ public class DirectorService {
 
         // Get cast node
         JsonNode castNode = rootNode.get("cast");
+        JsonNode crewNode = rootNode.get("crew");
 
         //Get all ids from the different directors
         Set<Long> ids = new HashSet<>();
 
-        for (int i = 0; i < Math.min(20, castNode.size()); i++) {
-            JsonNode directorNode = castNode.get(i);
+        // Cast node
+        for (int i = 0; i < castNode.size(); i++) {
+            int finalI = i;
+            JsonNode directorNode = castNode.get(finalI);
 
             //Check if the cast is a director
+            String text = String.valueOf(directorNode.get("known_for_department"));
 
+            if (text.contains("Directing")) {
+                Long id = directorNode.get("id").asLong();
+                ids.add(id);
+            }
+        }
+
+        // Crew node
+        for (int i = 0; i < crewNode.size(); i++) {
+            int finalI = i;
+            JsonNode directorNode = crewNode.get(finalI);
+
+            //Check if the cast is a director
             String text = String.valueOf(directorNode.get("known_for_department"));
 
             if (text.contains("Directing")) {

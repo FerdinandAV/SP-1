@@ -37,15 +37,14 @@ public class Main {
             //Fill database up with actors based on movies
             ActorService.fillDBWithActors(movies);
 
-            //Set actors and directors for movies
-            MovieService.addActorsAndDirectorsForMovies(new ArrayList<>(movies));
-
+            //Fill database up with directors
             DirectorService.fillDBWithDirectors(movies);
-
-
 
             //Fill database up with genres
             GenreService.fillDBWithGenres();
+
+            //Set actors and directors for movies
+            MovieService.addActorsAndDirectorsForMovies(new ArrayList<>(movies));
 
             //Set genres for movies
             MovieService.addGenresToMovies(new ArrayList<>(movies));

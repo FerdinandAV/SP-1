@@ -273,20 +273,27 @@ public class MovieDAO {
     }
 
     public void addDirectorToMovie(MovieDTO movieDTO, DirectorDTO directorDTO) {
-        try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            Movie movie = em.find(Movie.class, movieDTO.getId());
-            Director director = em.find(Director.class, directorDTO.getId());
-            if (movie != null && director != null) {
-                if (movie.getDirector() != null) {
-                    movie.getDirector().removeMovie(movie);
+
+        if (directorDTO == null) {
+            System.out.println("There was no director on this movie:" + movieDTO.getTitle());
+        }
+        else {
+
+            try (EntityManager em = emf.createEntityManager()) {
+                em.getTransaction().begin();
+                Movie movie = em.find(Movie.class, movieDTO.getId());
+                Director director = em.find(Director.class, directorDTO.getId());
+                if (movie != null && director != null) {
+                    if (movie.getDirector() != null) {
+                        movie.getDirector().removeMovie(movie);
+                    }
+                    movie.setDirector(director);
+                    em.merge(movie);
+                } else {
+                    System.out.println("Movie or Director not found with IDs: " + movieDTO.getId() + ", " + directorDTO.getId());
                 }
-                movie.setDirector(director);
-                em.merge(movie);
-            } else {
-                System.out.println("Movie or Director not found with IDs: " + movieDTO.getId() + ", " + directorDTO.getId());
+                em.getTransaction().commit();
             }
-            em.getTransaction().commit();
         }
     }
 
