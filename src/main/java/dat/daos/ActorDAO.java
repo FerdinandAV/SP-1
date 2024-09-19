@@ -10,6 +10,8 @@ import dat.DTO.ActorDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -119,12 +121,14 @@ public class ActorDAO {
             // Retrieve movies for the actor
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.actors a WHERE a.id = :actorId", Movie.class);
             query.setParameter("actorId", actorId);
-            List<MovieDTO> moviesDTOs = query.getResultList().forEach((movie) -> new MovieDTO(movie));
-            return moviesDTOs;
+            List<MovieDTO> moviesDTOS = new ArrayList<>();
+
+            query.getResultList().forEach((movie) -> moviesDTOS.add(new MovieDTO(movie)));
+            return moviesDTOS;
         }
     }
 
-    public ActorDTO getMoviesByActor(int id) {
+    /*public ActorDTO getMoviesByActor(int id) {
         try (EntityManager em = emf.createEntityManager()) {
             // Convert DTO to Entity
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.actors a WHERE a.id = :actorId", Movie.class);
@@ -168,6 +172,6 @@ public class ActorDAO {
             return new DirectorDTO(director, movieDTOs);
 
         }
-    }
+    }*/
 
 }
