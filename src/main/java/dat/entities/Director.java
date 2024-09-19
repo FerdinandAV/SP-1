@@ -1,5 +1,6 @@
 package dat.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dat.DTO.DirectorDTO;
@@ -50,8 +51,21 @@ public class Director {
    @Column(nullable = true)
    private String profile_path;
 
-   /*@OneToMany(mappedBy = "director")
-   private List<Movie> movies;*/
+   @OneToMany(mappedBy = "director")
+   private List<Movie> movies;
+
+   public void addMovie(Movie movie) {
+      if (movies == null) {
+         movies = new ArrayList<>();
+      }
+      movies.add(movie);
+   }
+
+    public void removeMovie(Movie movie) {
+        if (movies != null) {
+            movies.remove(movie);
+        }
+    }
 
    // Constructor to create a Director object from a DirectorDTO object
    public  Director(DirectorDTO directorDTO) {

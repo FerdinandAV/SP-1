@@ -16,12 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import static dat.services.MovieService.fetchAllMovies;
+import java.util.concurrent.*;
 
 public class ActorService {
 
@@ -105,7 +100,7 @@ public class ActorService {
         return ids;
     }
 
-    public static Set<ActorDTO> fillDBWithActors(Set<MovieDTO> movies) throws Exception {
+    public static void fillDBWithActors(Set<MovieDTO> movies) throws Exception {
         Set<ActorDTO> actorDTOS = new HashSet<>();
         Set<Long> ids = new HashSet<>();
 
@@ -113,7 +108,7 @@ public class ActorService {
 
         Set<Callable<Set<Long>>> idTasks = new HashSet<>();
 
-
+        //Get all actors ids using threads
         for (MovieDTO movieDTO : movies) {
             idTasks.add(() -> fetchAllActorsID(movieDTO.getTmdb_id()));
         }
@@ -164,8 +159,9 @@ public class ActorService {
         executor.shutdown();
 
         System.out.println("Now adding actors entities to database");
-        ActorDAO.createActors(actorDTOS);
+        ActorDAO.createActors(new ArrayList<>(actorDTOS));
+        //ActorDAO.createActors2(new ArrayList<>(actorDTOS), movies);
 
-        return actorDTOS;
     }
+
 }

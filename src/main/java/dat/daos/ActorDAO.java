@@ -49,18 +49,18 @@ public class ActorDAO {
         return new ActorDTO(actor);
     }
 
-    public static void createActors(Set<ActorDTO> actorDTOS) {
+    public static void createActors(List<ActorDTO> actorDTOS) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
             System.out.println("Fill her up!!!!");
 
-            for (ActorDTO actorDTO : actorDTOS) {
-                Actor actor = new Actor(actorDTO);
-
+            for (int i = 0; i < actorDTOS.size(); i++) {
+                Actor actor = new Actor(actorDTOS.get(i));
+                System.out.println(i);
                 //Check if movie already exists
                 TypedQuery<Actor> query = em.createQuery("SELECT a FROM Actor a WHERE a.imdbId = :imdb_id", Actor.class);
-                query.setParameter("imdb_id", actorDTO.getImdbId());
+                query.setParameter("imdb_id", actorDTOS.get(i).getImdbId());
                 if (query.getResultList().isEmpty()) {
                     em.merge(actor);
                 }
@@ -68,9 +68,11 @@ public class ActorDAO {
                     System.out.println("Actor already exists");
                 }
             }
+
             em.getTransaction().commit();
         }
     }
+
 
     public ActorDTO updateActor(ActorDTO actorDTO) {
         Actor actor = new Actor(actorDTO);
@@ -97,15 +99,24 @@ public class ActorDAO {
             em.getTransaction().commit();
         }
 
-
-
-
     }
 
     public ActorDTO findActor(int id) {
         try (EntityManager em = emf.createEntityManager()) {
             Actor actor = em.find(Actor.class, id);
             return new ActorDTO(actor);
+        }
+    }
+
+    public ActorDTO findActorByTMDBID(Long tmdb_id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Actor> query = em.createQuery("SELECT a FROM Actor a WHERE a.imdbId = :tmdb_id", Actor.class);
+            query.setParameter("tmdb_id", tmdb_id);
+            List<Actor> result = query.getResultList();
+            if (result.isEmpty()) {
+                throw new RuntimeException("Actor not found with TMDB ID: " + tmdb_id);
+            }
+            return new ActorDTO(result.get(0));
         }
     }
 

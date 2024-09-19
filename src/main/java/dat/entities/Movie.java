@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ArrayList;
 
 @Setter
 @Getter
@@ -59,6 +60,19 @@ public class Movie {
     @JoinColumn(name = "director_id")
     private Director director;
 
+    public void setDirector(Director director){
+        this.director = director;
+        director.addMovie(this);
+    }
+
+    public void removeDirector(){
+        if (director != null){
+            this.director.removeMovie(this);
+            director = null;
+
+        }
+    }
+
     @ManyToMany
     @JoinTable(
             name = "movie_actor",
@@ -67,6 +81,23 @@ public class Movie {
     )
     private List<Actor> actors;
 
+    // Adds actors to the movie entity and adds the movie to the actor entity
+    public void addActor(Actor actor){
+        if (actors == null){
+            actors = new ArrayList<>();
+        }
+        actors.add(actor);
+        actor.addMovie(this);
+    }
+
+    // Removes actors from the movie entity and removes the movie from the actor entity
+    public void removeActor(Actor actor){
+        if (actors != null){
+            actors.remove(actor);
+            actor.removeMovie(this);
+        }
+    }
+
     @ManyToMany
     @JoinTable(
             name = "movie_genre",
@@ -74,6 +105,23 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private List<Genre> genres;
+
+    // Adds genres to the movie entity and adds the movie to the genre entity
+    public void addGenre(Genre genre){
+        if (genres == null){
+            genres = new ArrayList<>();
+        }
+        genres.add(genre);
+        genre.addMovie(this);
+    }
+
+    // Removes genres from the movie entity and removes the movie from the genre entity
+    public void removeGenre(Genre genre){
+        if (genres != null){
+            genres.remove(genre);
+            genre.removeMovie(this);
+        }
+    }
 
     // Constructor to create a Movie object from a MovieDTO object
     public Movie(MovieDTO movieDTO) {

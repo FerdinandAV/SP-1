@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dat.entities.Actor;
+import dat.entities.Director;
+import dat.entities.Genre;
 import dat.enums.Gender;
 import lombok.*;
 
@@ -65,6 +67,13 @@ public class ActorDTO {
 
     @JsonSetter("profile_path")
     private String profilePath;
+
+    @JsonIgnore
+    private List<MovieDTO> movies;
+
+    @JsonIgnore
+    private List<Genre> genres;
+
 
     // Constructor to convert Actor to a ActorDTO
 

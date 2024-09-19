@@ -1,49 +1,55 @@
 package dat;
 
 import dat.DTO.ActorDTO;
+import dat.DTO.GenreDTO;
 import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
+import dat.daos.GenreDAO;
 import dat.daos.MovieDAO;
+import dat.entities.Genre;
 import dat.entities.Movie;
 import dat.services.ActorService;
+import dat.services.GenreService;
 import dat.services.DirectorService;
 import dat.services.MovieService;
 import jakarta.persistence.EntityManagerFactory;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
 
-        MovieDAO dao = new MovieDAO();
+        MovieDAO movieDao = new MovieDAO();
+        GenreDAO genreDAO = new GenreDAO();
 
         try {
 
-            MovieService.FillDBUpLast5yearsDanish2(2);
+            //Fill database up with movies
+            MovieService.FillDBUpLast5yearsDanish2(1);
 
-            Set<MovieDTO> movies = dao.getAllMovies();
+            //Get all movies from database
+            Set<MovieDTO> movies = movieDao.getAllMovies();
 
+            //Fill database up with actors based on movies
             ActorService.fillDBWithActors(movies);
+
+            //Set actors and directors for movies
+            MovieService.addActorsAndDirectorsForMovies(new ArrayList<>(movies));
 
             DirectorService.fillDBWithDirectors(movies);
 
 
-            /*
-            for (MovieDTO movieDTO : dao.getAllMovies()) {
-                List<ActorDTO> actorDTOS = ActorService.fillDBWithActors(movieDTO, 1);
-                System.out.println("Actors added to DB for movie ID " + movieDTO.getId() + ": " + actorDTOS.size());
-            }
 
-            System.out.println("Movies added to DB: " + movieDTOS.size());
-            */
+            //Fill database up with genres
+            GenreService.fillDBWithGenres();
 
-            /*
-            List<MovieDTO> movieDTOS = MovieService.FillDBUpLast5yearsDanish2(58);
-            System.out.println("Movies added to DB: " + movieDTOS.size()); 
-            */
+            //Set genres for movies
+            MovieService.addGenresToMovies(new ArrayList<>(movies));
+
 
         } catch (IOException e) {
             throw new RuntimeException(e);

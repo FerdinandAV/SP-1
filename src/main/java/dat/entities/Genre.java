@@ -1,8 +1,11 @@
 package dat.entities;
 
 
+import dat.DTO.GenreDTO;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -14,19 +17,39 @@ import java.util.List;
 @Builder
 @Entity
 
-@Table(name="genre")
+@Table(name = "genre")
 
 
 public class Genre {
 
- @Id
- @GeneratedValue(strategy = GenerationType.IDENTITY)
- private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
- /*@ManyToMany(mappedBy = "genres")
- private List<Movie> movies;*/
+    private Integer tmdbId;
 
- @Column(nullable = false)
- private String genre;
+    @ManyToMany(mappedBy = "genres")
+    private List<Movie> movies;
+
+    public void addMovie(Movie movie) {
+        if (movies == null) {
+            movies = new ArrayList<>();
+        }
+        movies.add(movie);
+    }
+
+    public void removeMovie(Movie movie) {
+        if (movies != null) {
+            movies.remove(movie);
+        }
+    }
+
+    @Column(nullable = false)
+    private String genre;
+
+    public Genre(GenreDTO genreDTO) {
+        this.genre = genreDTO.getGenre();
+        this.tmdbId = genreDTO.getTmdbId();
+    }
 
 }

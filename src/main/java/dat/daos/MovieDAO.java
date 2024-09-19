@@ -1,8 +1,13 @@
 package dat.daos;
 
+import dat.DTO.ActorDTO;
+import dat.DTO.DirectorDTO;
+import dat.DTO.GenreDTO;
 import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
 import dat.entities.Actor;
+import dat.entities.Director;
+import dat.entities.Genre;
 import dat.entities.Movie;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -26,8 +31,7 @@ public class MovieDAO {
             query.setParameter("title", movie.getTitle());
             if (query.getResultList().isEmpty()) {
                 em.merge(movie);
-            }
-            else {
+            } else {
                 /*movie.setId(query.getResultList().get(0).getId());
                 em.merge(movie);*/
                 System.out.println("Movie already exists");
@@ -51,10 +55,8 @@ public class MovieDAO {
                 query.setParameter("tmdb_id", movie.getTmdb_id());
                 if (query.getResultList().isEmpty()) {
                     em.merge(movie);
-                }
-                else {
+                } else {
                     System.out.println("Movie already exists");
-                    movie = query.getSingleResult();
                 }
             }
             em.getTransaction().commit();
@@ -232,6 +234,84 @@ public class MovieDAO {
                 }
             } else {
                 System.out.println("Movie or Actor not found with IDs: " + movieId + ", " + actorId);
+            }
+            em.getTransaction().commit();
+        }
+    }
+
+    public void addActorsToMovie(MovieDTO movieDTO, List<ActorDTO> actorDTOS) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            Movie movie = em.find(Movie.class, movieDTO.getId());
+            if (movie != null) {
+                if (movie.getActors() == null) {
+                    movie.setActors(new ArrayList<>()); // Initialize the list if null
+                }
+                for (ActorDTO actorDTO : actorDTOS) {
+                    Actor actor = em.find(Actor.class, actorDTO.getId());
+                    if (actor != null) {
+                        //If the list doesnt contain the actor, add it
+                        if (!movie.getActors().contains(actor)) {
+                            movie.getActors().add(actor);
+                        }
+                    } else {
+                        System.out.println("Actor not found with ID: " + actorDTO.getId());
+                    }
+                }
+                em.merge(movie);
+            } else {
+                System.out.println("Movie not found with ID: " + movieDTO.getId());
+            }
+            em.getTransaction().commit();
+        }
+
+    }
+
+    public void addDirectorToMovie(MovieDTO movieDTO, DirectorDTO directorDTO) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            Movie movie = em.find(Movie.class, movieDTO.getId());
+            Director director = em.find(Director.class, directorDTO.getId());
+            if (movie != null && director != null) {
+                if (movie.getDirector() != null) {
+                    movie.getDirector().removeMovie(movie);
+                }
+                movie.setDirector(director);
+                em.merge(movie);
+            } else {
+                System.out.println("Movie or Director not found with IDs: " + movieDTO.getId() + ", " + directorDTO.getId());
+            }
+            em.getTransaction().commit();
+        }
+    }
+
+    public void addGenresToMovie(MovieDTO movieDTO, List<GenreDTO> genreDTOS) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            Movie movie = em.find(Movie.class, movieDTO.getId());
+            if (movie != null) {
+                if (movie.getGenres() == null) {
+                    movie.setGenres(new ArrayList<>()); // Initialize the list if null
+                }
+                for (GenreDTO genreDTO : genreDTOS) {
+                    System.out.println(genreDTO);
+                    if (genreDTO.getId() != null) { // Ensure genreDTO id is not null
+                        Genre genre = em.find(Genre.class, genreDTO.getId());
+                        if (genre != null) {
+                            //If the list doesnt contain the genre, add it
+                            if (!movie.getGenres().contains(genre)) {
+                                movie.getGenres().add(genre);
+                            }
+                        } else {
+                            System.out.println("Genre not found with ID: " + genreDTO.getId());
+                        }
+                    } else {
+                        System.out.println("GenreDTO ID is null");
+                    }
+                }
+                em.merge(movie);
+            } else {
+                System.out.println("Movie not found with ID: " + movieDTO.getId());
             }
             em.getTransaction().commit();
         }
