@@ -29,25 +29,25 @@ public class Main {
         try {
 
             //Fill database up with movies
-            MovieService.FillDBUpLast5yearsDanish2(1);
+            MovieService.FillDBUpLast5yearsDanish(1);
 
             //Get all movies from database
             Set<MovieDTO> movies = movieDao.getAllMovies();
 
             //Fill database up with actors based on movies
-            ActorService.fillDBWithActors(movies);
+            //ActorService.fillDBWithActors(movies);
 
             //Fill database up with directors
-            DirectorService.fillDBWithDirectors(movies);
+            //DirectorService.fillDBWithDirectors(movies);
 
             //Fill database up with genres
-            GenreService.fillDBWithGenres();
+            //GenreService.fillDBWithGenres();
 
             //Set actors and directors for movies
             MovieService.addActorsAndDirectorsForMovies(new ArrayList<>(movies));
 
             //Set genres for movies
-            MovieService.addGenresToMovies(new ArrayList<>(movies));
+            //MovieService.addGenresToMovies(new ArrayList<>(movies));
 
 
         } catch (IOException e) {

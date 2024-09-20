@@ -2,6 +2,8 @@ package dat.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dat.DTO.ActorDTO;
 import dat.DTO.GenreDTO;
 import dat.DTO.MovieDTO;
 import dat.daos.GenreDAO;
@@ -19,9 +21,9 @@ public class GenreService {
 
     public static final String API_KEY = System.getenv("API_KEY");
 
-    public static List<GenreDTO> fetchAllGenres() throws IOException, InterruptedException {
+    public static GenreDTO getGenre(Long id) throws IOException, InterruptedException {
+        // Build the request URL to fetch actors based on the movie ID and page
         String url = "https://api.themoviedb.org/3/genre/movie/list" + "?api_key=" + API_KEY;
-
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
@@ -30,36 +32,28 @@ public class GenreService {
                 .GET()
                 .build();
 
+        System.out.println(url);
+
         // Send the HTTP request
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        // Log the response body for debugging purposes
+        System.out.println("API Response: " + response.body());
+
+        // Parse the response
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode rootNode = objectMapper.readTree(response.body());
+        objectMapper.registerModule(new JavaTimeModule());
 
-        // Assuming the response contains a field "genres" with an array of movies
-        JsonNode genresNode = rootNode.get("genres");
+        JsonNode genresNode = objectMapper.readTree(response.body()).get("genres");
 
-        List<GenreDTO> genres = new ArrayList<>();
-
-        for (int i = 0; i < Math.min(20, genresNode.size()); i++) {
-            JsonNode genreNode = genresNode.get(i);
-            GenreDTO genreDTO = objectMapper.treeToValue(genreNode, GenreDTO.class);
-            System.out.println(genreDTO.getGenre());
-            genres.add(genreDTO);
+        for (int i = 0; i < genresNode.size(); i++) {
+            if (genresNode.get(i).get("id").asInt() == id) {
+                GenreDTO genreDTO = objectMapper.treeToValue(genresNode.get(i), GenreDTO.class);
+                return genreDTO;
+            }
         }
 
-        return genres;
-    }
-
-    public static void fillDBWithGenres() {
-        try {
-            List<GenreDTO> genres = fetchAllGenres();
-            GenreDAO.createGenres(genres);
-
-            // GenreDAO.createGenres(genreEntities);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        return null;
     }
 
 }

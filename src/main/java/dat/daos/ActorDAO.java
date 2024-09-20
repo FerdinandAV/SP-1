@@ -49,11 +49,10 @@ public class ActorDAO {
         return new ActorDTO(actor);
     }
 
-    public static void createActors(List<ActorDTO> actorDTOS) {
+    public static List<ActorDTO> createActors(List<ActorDTO> actorDTOS) {
+        List<ActorDTO> actorDTOList = new ArrayList<>();
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-
-            System.out.println("Fill her up!!!!");
 
             for (int i = 0; i < actorDTOS.size(); i++) {
                 Actor actor = new Actor(actorDTOS.get(i));
@@ -67,10 +66,12 @@ public class ActorDAO {
                 else {
                     System.out.println("Actor already exists");
                 }
+                actorDTOList.add(new ActorDTO(query.getSingleResult()));
             }
 
             em.getTransaction().commit();
         }
+        return actorDTOList;
     }
 
 

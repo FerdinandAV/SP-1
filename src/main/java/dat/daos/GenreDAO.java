@@ -17,12 +17,11 @@ public class GenreDAO {
 
     static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
 
-    public static void createGenres(List<GenreDTO> genres) {
-        // Create genres
+    public static List<GenreDTO> createGenres(List<GenreDTO> genres) {
+        List<GenreDTO> genreDTOS = new ArrayList<>();
 
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-
 
             for (GenreDTO genreDTO : genres) {
                 // Create a Genre entity from the DTO
@@ -37,10 +36,12 @@ public class GenreDAO {
                 else {
                     System.out.println("Genre already exists");
                 }
+                genreDTOS.add(new GenreDTO(query.getSingleResult()));
             }
 
             em.getTransaction().commit();
         }
+        return genreDTOS;
     }
 
     public List<GenreDTO> getAllGenres() {

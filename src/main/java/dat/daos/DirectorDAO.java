@@ -30,7 +30,7 @@ public class DirectorDAO {
             TypedQuery<Director> query = em.createQuery("SELECT d FROM Director d WHERE d.name = :name", Director.class);
             query.setParameter("name", director.getName());
             if (query.getResultList().isEmpty()) {
-                em.persist(director);
+                em.merge(director);
             } else {
                 System.out.println("Director already exists");
                 director = query.getSingleResult();
@@ -42,7 +42,7 @@ public class DirectorDAO {
 
     }
 
-    public static void createDirectors(Set<DirectorDTO> directorDTOS) {
+    public static void createDirectors(List<DirectorDTO> directorDTOS) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 

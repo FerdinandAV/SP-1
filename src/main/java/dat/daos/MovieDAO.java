@@ -32,15 +32,13 @@ public class MovieDAO {
             if (query.getResultList().isEmpty()) {
                 em.merge(movie);
             } else {
-                /*movie.setId(query.getResultList().get(0).getId());
-                em.merge(movie);*/
                 System.out.println("Movie already exists");
-                movie = query.getSingleResult();
             }
 
             em.getTransaction().commit();
+
+            return new MovieDTO(query.getSingleResult());
         }
-        return new MovieDTO(movie);
     }
 
     public static void createMovies(List<MovieDTO> movieDTOS) {
@@ -249,22 +247,28 @@ public class MovieDAO {
             em.getTransaction().begin();
             Movie movie = em.find(Movie.class, movieDTO.getId());
             if (movie != null) {
+                System.out.println("252");
                 if (movie.getActors() == null) {
                     movie.setActors(new ArrayList<>()); // Initialize the list if null
+                    System.out.println("254");
                 }
                 for (ActorDTO actorDTO : actorDTOS) {
                     Actor actor = em.find(Actor.class, actorDTO.getId());
                     if (actor != null) {
+                        System.out.println("260");
                         //If the list doesnt contain the actor, add it
                         if (!movie.getActors().contains(actor)) {
                             movie.getActors().add(actor);
+                            System.out.println("264");
                         }
                     } else {
+                        System.out.println("267");
                         System.out.println("Actor not found with ID: " + actorDTO.getId());
                     }
                 }
                 em.merge(movie);
             } else {
+                System.out.println("273");
                 System.out.println("Movie not found with ID: " + movieDTO.getId());
             }
             em.getTransaction().commit();
@@ -306,7 +310,6 @@ public class MovieDAO {
                     movie.setGenres(new ArrayList<>()); // Initialize the list if null
                 }
                 for (GenreDTO genreDTO : genreDTOS) {
-                    System.out.println(genreDTO);
                     if (genreDTO.getId() != null) { // Ensure genreDTO id is not null
                         Genre genre = em.find(Genre.class, genreDTO.getId());
                         if (genre != null) {
