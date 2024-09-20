@@ -71,11 +71,11 @@ public class Director {
    public  Director(DirectorDTO directorDTO) {
       this.id = directorDTO.getId();
       this.name = directorDTO.getName();
-      this.original_name = getOriginal_name();
-      this.media_type = getMedia_type();
+      //this.original_name = directorDTO.getOriginal_name();
+      //this.media_type = directorDTO.getMedia_type();
       this.adult = directorDTO.isAdult();
       this.profile_path = directorDTO.getProfilePath();
-      this.gender = getGender();
+      this.gender = directorDTO.getGender();
       this.imdbId = directorDTO.getImdbId();
       //this.popularity = getPopularity();
    }

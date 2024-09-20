@@ -62,11 +62,10 @@ public class ActorDAO {
                 query.setParameter("imdb_id", actorDTOS.get(i).getImdbId());
                 if (query.getResultList().isEmpty()) {
                     em.merge(actor);
-                }
-                else {
+                } else {
                     System.out.println("Actor already exists");
                 }
-                actorDTOList.add(new ActorDTO(query.getSingleResult()));
+                actorDTOList.add(new ActorDTO(query.getResultList().get(0)));
             }
 
             em.getTransaction().commit();
