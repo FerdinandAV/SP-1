@@ -62,11 +62,10 @@ public class ActorDAO {
                 query.setParameter("imdb_id", actorDTOS.get(i).getImdbId());
                 if (query.getResultList().isEmpty()) {
                     em.merge(actor);
-                }
-                else {
+                } else {
                     System.out.println("Actor already exists");
                 }
-                actorDTOList.add(new ActorDTO(query.getSingleResult()));
+                actorDTOList.add(new ActorDTO(query.getResultList().get(0)));
             }
 
             em.getTransaction().commit();
@@ -137,6 +136,16 @@ public class ActorDAO {
 
             query.getResultList().forEach((movie) -> moviesDTOS.add(new MovieDTO(movie)));
             return moviesDTOS;
+        }
+    }
+
+    public List<ActorDTO> getAllActors() {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Actor> query = em.createQuery("SELECT a FROM Actor a", Actor.class);
+            List<Actor> actors = query.getResultList();
+            return actors.stream()
+                    .map(ActorDTO::new)
+                    .collect(Collectors.toList());
         }
     }
 

@@ -2,6 +2,7 @@ package dat.daos;
 
 import dat.DTO.ActorDTO;
 import dat.DTO.GenreDTO;
+import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
 import dat.entities.Actor;
 import dat.entities.Genre;
@@ -76,6 +77,21 @@ public class GenreDAO {
                 throw new RuntimeException("Genre not found with TMDB ID: " + tmdb_id);
             }
             return new GenreDTO(result.get(0));
+        }
+    }
+
+    public List<MovieDTO> searchByGenre(String genre) {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m JOIN m.genres g WHERE g.genre = :genre", Movie.class);
+            query.setParameter("genre", genre);
+            List<Movie> movies = query.getResultList();
+
+            List<MovieDTO> movieDTOS = new ArrayList<>();
+            for (Movie movie : movies) {
+                movieDTOS.add(new MovieDTO(movie));
+            }
+
+            return movieDTOS;
         }
     }
 }

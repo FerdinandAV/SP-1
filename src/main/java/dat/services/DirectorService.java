@@ -42,7 +42,6 @@ public class DirectorService {
         // Log the response body for debugging purposes
         System.out.println("API Response: " + response.body());
 
-
         // Parse the response
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());

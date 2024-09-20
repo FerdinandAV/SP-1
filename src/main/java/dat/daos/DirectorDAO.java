@@ -15,6 +15,7 @@ import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DirectorDAO {
 
@@ -132,6 +133,16 @@ public class DirectorDAO {
                 Director result = query.getSingleResult();
                 return new DirectorDTO(result);
             }
+        }
+    }
+
+    public List<DirectorDTO> getAllDirectors() {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Director> query = em.createQuery("SELECT d FROM Director d", Director.class);
+            List<Director> directors = query.getResultList();
+            return directors.stream()
+                    .map(DirectorDTO::new)
+                    .collect(Collectors.toList());
         }
     }
 }

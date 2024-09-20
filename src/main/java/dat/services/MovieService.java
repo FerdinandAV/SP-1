@@ -11,6 +11,7 @@ import dat.daos.ActorDAO;
 import dat.daos.DirectorDAO;
 import dat.daos.GenreDAO;
 import dat.daos.MovieDAO;
+import dat.entities.Director;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -27,7 +28,6 @@ import java.util.concurrent.*;
 public class MovieService {
 
     public static final String API_KEY = System.getenv("API_KEY"); // Getting API key from the environment variables
-    private static final String BASE_URL_MOVIE = "https://api.themoviedb.org/3/movie/"; // URL for fetching a movie by ID
     public static final String BASE_URL_MOVIE_Danish = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_origin_country=DK"; // URL for fetching Danish movies
 
     public static List<MovieDTO> fetchAllMovies(int page) throws IOException, InterruptedException {
@@ -46,8 +46,6 @@ public class MovieService {
                 "&primary_release_date.gte=" + fiveYearsAgoString +
                 "&primary_release_date.lte=" + currentDateString +
                 "&page=" + page + "&api_key=" + API_KEY;
-
-        System.out.println(url);
 
         // Create an HTTP client
         HttpClient client = HttpClient.newHttpClient();
@@ -70,15 +68,12 @@ public class MovieService {
 
         List<MovieDTO> movies = new ArrayList<>();
 
-        //List<GenreDTO> allGenres = GenreDAO.getAllGenres();
-
         // Process the first 20 movies
         for (int i = 0; i < Math.min(20, resultsNode.size()); i++) {
             List<GenreDTO> genresDTOS = new ArrayList<>();
 
             JsonNode movieNode = resultsNode.get(i);
             MovieDTO movie = objectMapper.treeToValue(movieNode, MovieDTO.class);
-            System.out.println(movie.getTitle());
 
             JsonNode genreNode = movieNode.get("genre_ids");
 
@@ -87,12 +82,8 @@ public class MovieService {
                 genresDTOS.add(GenreDAO.getGenreByTMDBID(id));
             }
 
-            // Ensure genre is created before adding them to the movie
-
             MovieDTO movieDTO = MovieDAO.createMovie(movie);
             movies.add(movieDTO);
-
-            System.out.println(movieDTO);
 
             // Add genres to the movie
             movieDAO.addGenresToMovie(movieDTO, genresDTOS);
@@ -231,8 +222,6 @@ public class MovieService {
 
         // Ensure directors are created before adding them to the movie
         DirectorDAO.createDirectors(directorDTOS);
-
-        // Ensure director is created before adding them to the movie
         DirectorDTO directorDTOfromDB = DirectorDAO.createDirector(directorDTO);
 
         // Add actors, director and genres to the movie
@@ -240,7 +229,6 @@ public class MovieService {
         movieDAO.addDirectorToMovie(movieDTO, directorDTOfromDB);
 
     }
-
 
 }
 

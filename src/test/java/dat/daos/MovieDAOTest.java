@@ -22,8 +22,13 @@ class MovieDAOTest {
 
     @Test
     void createMovie() {
-        //MovieDTO movie = MovieDAO.createMovie(movieDTO);
-        //System.out.println(movie);
+        MovieDTO movieDTO = MovieDTO.builder()
+                .adult(false)
+                .overview("dwadaw")
+                .title("new movie")
+                .build();
+        MovieDTO movieDTOFromDB = MovieDAO.createMovie(movieDTO);
+        assertNotNull(movieDTOFromDB.getId());
     }
 
 

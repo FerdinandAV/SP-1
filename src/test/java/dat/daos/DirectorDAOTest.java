@@ -1,5 +1,6 @@
 package dat.daos;
 
+import dat.DTO.ActorDTO;
 import dat.DTO.DirectorDTO;
 import dat.DTO.MovieDTO;
 import dat.config.HibernateConfig;
@@ -61,5 +62,13 @@ public class DirectorDAOTest {
         assertEquals(2,movies.size(),"There should be 2 movies returned");
         assertTrue(movies.stream().anyMatch(movie -> movie.getTitle().equals("Test Movie 1")), "Movie 1 should be present");
         assertTrue(movies.stream().anyMatch(movie -> movie.getTitle().equals("Test Movie 2")), "Movie 2 should be present");
+    }
+
+    @Test
+    void getAllDirectors() {
+        List<DirectorDTO> directors = directorDAO.getAllDirectors();
+        assertNotNull(directors, "Actors list should not be null");
+        assertFalse(directors.isEmpty(), "Actors list should not be empty");
+        directors.forEach(actorDTO -> System.out.println(actorDTO.getName()));
     }
 }
