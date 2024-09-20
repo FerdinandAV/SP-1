@@ -31,7 +31,7 @@ public class DirectorDAOTest {
 
 
     @Test
-    void findMoviesByDirectorId() {
+    void testfindMoviesByDirectorId() {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
 
@@ -62,6 +62,12 @@ public class DirectorDAOTest {
         assertEquals(2,movies.size(),"There should be 2 movies returned");
         assertTrue(movies.stream().anyMatch(movie -> movie.getTitle().equals("Test Movie 1")), "Movie 1 should be present");
         assertTrue(movies.stream().anyMatch(movie -> movie.getTitle().equals("Test Movie 2")), "Movie 2 should be present");
+    }
+
+    @Test
+    void findMoviesByDirectorId() {
+        // 21 is Thomas Winterberg
+        directorDAO.findMoviesByDirectorId(21).forEach(movieDTO -> System.out.println(movieDTO.getTitle()));
     }
 
     @Test

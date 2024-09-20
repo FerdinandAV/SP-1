@@ -98,7 +98,7 @@ public class MovieService {
 
         List<MovieDTO> movieDTOS = new ArrayList<>();
 
-        ExecutorService executor = Executors.newFixedThreadPool(12);
+        ExecutorService executor = Executors.newFixedThreadPool(6);
 
         //Movies are fetched in parallel using threads
         List<Callable<List<MovieDTO>>> movieTasks = new ArrayList<>();
