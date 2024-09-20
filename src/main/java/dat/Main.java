@@ -8,7 +8,7 @@ public class Main {
         try {
 
             //Fill database up with movies, total pages is around 58
-            MovieService.FillDBUpLast5yearsDanish(10);
+            MovieService.FillDBUpLast5yearsDanish(5);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
