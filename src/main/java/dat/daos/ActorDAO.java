@@ -28,7 +28,7 @@ public class ActorDAO {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
-            // Check if actor already exists by querying the database based on name (or another unique field)
+            // Retrieve the actor by name
             TypedQuery<Actor> query = em.createQuery("SELECT a FROM Actor a WHERE a.name = :name", Actor.class);
             query.setParameter("name", actor.getName());
             List<Actor> result = query.getResultList();
@@ -54,12 +54,14 @@ public class ActorDAO {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
+            // Iterate over the list of actors
             for (int i = 0; i < actorDTOS.size(); i++) {
                 Actor actor = new Actor(actorDTOS.get(i));
                 System.out.println(i);
-                //Check if movie already exists
+                // Retrive the actor by imdbId
                 TypedQuery<Actor> query = em.createQuery("SELECT a FROM Actor a WHERE a.imdbId = :imdb_id", Actor.class);
                 query.setParameter("imdb_id", actorDTOS.get(i).getImdbId());
+                // If the actor does not exist, persist the new entity
                 if (query.getResultList().isEmpty()) {
                     em.merge(actor);
                 } else {
@@ -77,10 +79,9 @@ public class ActorDAO {
     public ActorDTO updateActor(ActorDTO actorDTO) {
         Actor actor = new Actor(actorDTO);
         try (EntityManager em = emf.createEntityManager()) {
-            //Convert DTO to Entity
             em.getTransaction().begin();
 
-            //Update actor
+            // Update actor
             em.merge(actor);
             em.getTransaction().commit();
         }
@@ -91,10 +92,9 @@ public class ActorDAO {
     public void deleteActor(ActorDTO actorDTO) {
         Actor actor = new Actor(actorDTO);
         try (EntityManager em = emf.createEntityManager()) {
-            //Convert DTO to Entity
             em.getTransaction().begin();
 
-            //Delete actor
+            // Find the actor by ID and remove it
             em.remove(em.find(Actor.class, actor.getId()));
             em.getTransaction().commit();
         }
@@ -128,6 +128,7 @@ public class ActorDAO {
 
     public List<ActorDTO> getAllActors() {
         try (EntityManager em = emf.createEntityManager()) {
+            // Retrieve actors from the database
             TypedQuery<Actor> query = em.createQuery("SELECT a FROM Actor a", Actor.class);
             List<Actor> actors = query.getResultList();
             return actors.stream()

@@ -23,12 +23,13 @@ public class MovieDAO {
     public static MovieDTO createMovie(MovieDTO movieDTO) {
         Movie movie = new Movie(movieDTO);
         try (EntityManager em = emf.createEntityManager()) {
-            //Convert DTO to Entity
             em.getTransaction().begin();
 
-            //Check if movie already exists
+            // Retrieve the movie by title from the database
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.title = :title", Movie.class);
             query.setParameter("title", movie.getTitle());
+
+            // Check if the list of movies is empty and merge the movie entity
             if (query.getResultList().isEmpty()) {
                 em.merge(movie);
             } else {
@@ -45,12 +46,15 @@ public class MovieDAO {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
+
             for (MovieDTO movieDTO : movieDTOS) {
                 Movie movie = new Movie(movieDTO);
 
-                //Check if movie already exists
+                // Retrieve the movie by tmdbID from the database
                 TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.tmdb_id = :tmdb_id", Movie.class);
                 query.setParameter("tmdb_id", movie.getTmdb_id());
+
+                // Check if the list of movies is empty and merge the movie entity
                 if (query.getResultList().isEmpty()) {
                     em.merge(movie);
                 } else {
@@ -63,10 +67,12 @@ public class MovieDAO {
 
     public MovieDTO updateMovie(MovieDTO movieDTO) {
         try (EntityManager em = emf.createEntityManager()) {
-            //Convert DTO to Entity
             em.getTransaction().begin();
 
+            // Find existing movie in database by ID
             Movie existingMovie = em.find(Movie.class, movieDTO.getId());
+
+            // If movie does not exist, throw exception
             if (existingMovie == null) {
                 throw new IllegalArgumentException("Movie not found with id: " + movieDTO.getId());
             }
@@ -89,7 +95,7 @@ public class MovieDAO {
             Movie updatedMovie = em.merge(existingMovie);
             em.getTransaction().commit();
 
-            // return movie with new values
+            // Return movie with new values
             return new MovieDTO(updatedMovie);
         }
     }
@@ -97,7 +103,6 @@ public class MovieDAO {
     public void deleteMovie(MovieDTO movieDTO) {
         Movie movie = new Movie(movieDTO);
         try (EntityManager em = emf.createEntityManager()) {
-            //Convert DTO to Entity
             em.getTransaction().begin();
 
             //Delete movie
@@ -109,6 +114,8 @@ public class MovieDAO {
 
     public MovieDTO findMovie(int id) {
         try (EntityManager em = emf.createEntityManager()) {
+
+            // Find the movie by ID
             Movie movie = em.find(Movie.class, id);
             return new MovieDTO(movie);
         }
@@ -116,11 +123,12 @@ public class MovieDAO {
 
     public List<MovieDTO> findMovieByTitle(String title) {
         List<MovieDTO> movieDTOS;
-
         try (EntityManager em = emf.createEntityManager()) {
-            // Convert DTO to Entity
-            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+
             // Query to retrive all movies
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+
+            // Get the list of movies from the query
             List<Movie> movies = query.getResultList();
 
             // Maps movies to MovieDTOs, filters by title and adds them to a list
@@ -129,6 +137,7 @@ public class MovieDAO {
                     .map(movie -> new MovieDTO(movie))
                     .collect(Collectors.toList());
 
+            // Check if the list of movies is empty and print a message if it is
             if (movieDTOS.isEmpty()) {
                 System.out.println("There was no movies with this title");
                 return null;
@@ -140,9 +149,11 @@ public class MovieDAO {
 
     public double getTotalAverageRating() {
         try (EntityManager em = emf.createEntityManager()) {
-            // Convert DTO to Entity
-            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+
             // Query to retrive all movies
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+
+            // Get the list of movies from the query
             List<Movie> movies = query.getResultList();
 
             // Maps movies to MovieDTOs, finds movies with Vote_count higher than 20, maps to double and calculates average
@@ -161,9 +172,11 @@ public class MovieDAO {
 
     public List<MovieDTO> getTopTenBestMovies() {
         try (EntityManager em = emf.createEntityManager()) {
-            // Convert DTO to Entity
-            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+
             // Query to retrive all movies
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+
+            // Get the list of movies from the query
             List<Movie> movies = query.getResultList();
 
             // Maps movies to MovieDTOs, sorts by vote_average and reversed, so they go from highest to lowest, filters by vote_count higher than 50, limits to 10 and adds them to a list
@@ -179,10 +192,13 @@ public class MovieDAO {
 
     public List<MovieDTO> getTopTenWorstMovies() {
         try (EntityManager em = emf.createEntityManager()) {
-            // Convert DTO to Entity
-            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m ORDER BY m.vote_average ASC", Movie.class);
+
             // Query to retrive all movies and orders them by vote_average in ascending order
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m ORDER BY m.vote_average ASC", Movie.class);
+
+            // Get the list of movies from the query
             List<Movie> movies = query.getResultList();
+
             // Maps movies to MovieDTOs, filters by vote_count higher than 50, limits to 10 and adds them to a list
             List<MovieDTO> movieDTOS = movies.stream()
                     .filter(movie -> movie.getVote_count() > 50)
@@ -195,10 +211,13 @@ public class MovieDAO {
 
     public List<MovieDTO> getTopTenMostPopularMovies() {
         try (EntityManager em = emf.createEntityManager()) {
-            // Convert DTO to Entity
-            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m ORDER BY m.popularity DESC", Movie.class);
+
             // Query to retrive all movies and orders them by popularity in descending order
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m ORDER BY m.popularity DESC", Movie.class);
+
+            // Get the list of movies from the query
             List<Movie> movies = query.getResultList();
+
             // Maps movies to MovieDTOs, limits to 10 and adds them to a list
             List<MovieDTO> movieDTOS = movies.stream()
                     .limit(10)
@@ -210,11 +229,17 @@ public class MovieDAO {
 
     public Set<MovieDTO> getAllMovies() {
         try (EntityManager em = emf.createEntityManager()) {
+
+            // Query to retrive all movies from the database
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m", Movie.class);
+
+            // Get the list of movies from the query
             List<Movie> movies = query.getResultList();
 
+            // Create a set of MovieDTOs
             Set<MovieDTO> movieDTOS = new HashSet<>();
 
+            // Convert the list of Movie entities to a set of MovieDTOs
             for (Movie movie : movies) {
                 movieDTOS.add(new MovieDTO(movie));
             }
@@ -226,12 +251,18 @@ public class MovieDAO {
     public void addActorToMovie(int movieId, int actorId) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
+
+            // Find movie and actor by ID
             Movie movie = em.find(Movie.class, movieId);
             Actor actor = em.find(Actor.class, actorId);
+
+            // If movie and actor are not null, add actor to movie
             if (movie != null && actor != null) {
                 if (movie.getActors() == null) {
                     movie.setActors(new ArrayList<>()); // Initialize the list if null
                 }
+
+                //If the list doesn't contain the actor, add it
                 if (!movie.getActors().contains(actor)) {
                     movie.getActors().add(actor);
                     em.merge(movie);
@@ -246,7 +277,8 @@ public class MovieDAO {
     public void addActorsToMovie(MovieDTO movieDTO, List<ActorDTO> actorDTOS) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            Movie movie = em.find(Movie.class, movieDTO.getId());
+
+            Movie movie = em.find(Movie.class, movieDTO.getId());// Find movie by ID
             if (movie != null) {
                 System.out.println("252");
                 if (movie.getActors() == null) {
@@ -254,9 +286,10 @@ public class MovieDAO {
                     System.out.println("254");
                 }
                 for (ActorDTO actorDTO : actorDTOS) {
-                    Actor actor = em.find(Actor.class, actorDTO.getId());
+                    Actor actor = em.find(Actor.class, actorDTO.getId()); // Find actor by ID
                     if (actor != null) {
                         System.out.println("260");
+
                         //If the list doesnt contain the actor, add it
                         if (!movie.getActors().contains(actor)) {
                             movie.getActors().add(actor);
@@ -279,6 +312,7 @@ public class MovieDAO {
 
     public void addDirectorToMovie(MovieDTO movieDTO, DirectorDTO directorDTO) {
 
+        // Check if directorDTO is null and print a message if it is
         if (directorDTO == null) {
             System.out.println("There was no director on this movie:" + movieDTO.getTitle());
         }
@@ -286,8 +320,11 @@ public class MovieDAO {
 
             try (EntityManager em = emf.createEntityManager()) {
                 em.getTransaction().begin();
+
+                // Find movie and director by ID
                 Movie movie = em.find(Movie.class, movieDTO.getId());
                 Director director = em.find(Director.class, directorDTO.getId());
+                // If movie and director are not null, add director to movie
                 if (movie != null && director != null) {
                     if (movie.getDirector() != null) {
                         movie.getDirector().removeMovie(movie);
@@ -305,8 +342,11 @@ public class MovieDAO {
     public void addGenresToMovie(MovieDTO movieDTO, List<GenreDTO> genreDTOS) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
+
+            // Find movie by ID
             Movie movie = em.find(Movie.class, movieDTO.getId());
-            if (movie != null) {
+
+            if (movie != null) { // If movie is not null, add genres to movie
                 if (movie.getGenres() == null) {
                     movie.setGenres(new ArrayList<>()); // Initialize the list if null
                 }
@@ -314,7 +354,7 @@ public class MovieDAO {
                     if (genreDTO.getId() != null) { // Ensure genreDTO id is not null
                         Genre genre = em.find(Genre.class, genreDTO.getId());
                         if (genre != null) {
-                            //If the list doesnt contain the genre, add it
+                            // If the list doesn't contain the genre, add it
                             if (!movie.getGenres().contains(genre)) {
                                 movie.getGenres().add(genre);
                             }
