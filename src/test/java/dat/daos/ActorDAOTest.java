@@ -15,65 +15,105 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ActorDAOTest {
 
-    static ActorDAO actorDAO;
-    static MovieDAO movieDAO; // Assuming you have a MovieDAO class for movie operations
+    static ActorDAO actorDAO; // Declare an instance of ActorDAO
+    static MovieDAO movieDAO; // Declare an instance of MovieDAO
 
     @BeforeAll
     static void setUp() {
-        actorDAO = new ActorDAO();
-        movieDAO = new MovieDAO(); // Initialize MovieDAO if needed
+        actorDAO = new ActorDAO(); // Initialize the ActorDAO instance
+        movieDAO = new MovieDAO(); // Initialize the MovieDAO instance
     }
 
     @Test
     void createActor() {
-        ActorDTO actorDTO = new ActorDTO();
-        actorDTO.setName("Mads Mikkelsen");
+
+        ActorDTO actorDTO = new ActorDTO();   // Create a new ActorDTO object
+        actorDTO.setName("Mads Mikkelsen");   // Setting the name to Mads Mikkelsen
+
+        // Call the createActor method with the actorDTO,
+        // which creates the Actor entity in the database
+        // and returns the result as an ActorDTO, stored in the createdActor variable.
         ActorDTO createdActor = ActorDAO.createActor(actorDTO);
+
+
+        // Assert that the created actor is not null,
+        // confirming the actor was created successfully
         assertNotNull(createdActor, "Actor should be created successfully");
+
+        //Assert that the created actor's ID is not null,
+        // meaning the entity was persisted
         assertNotNull(createdActor.getId(), "Actor ID should not be null");
     }
 
     @Test
     void updateActor() {
         // Setup a known actor
-        ActorDTO actorDTO = new ActorDTO();
-        actorDTO.setName("Mads Mikkelsen");
+        ActorDTO actorDTO = new ActorDTO(); // Create a new ActorDTO object
+        actorDTO.setName("Mads Mikkelsen"); // Setting the name to Mads Mikkelsen
+
+        // Call the createActor method with the actorDTO,
+        // which creates the Actor entity in the database
+        // and returns the result as an ActorDTO, stored in the createdActor variable.
         ActorDTO createdActor = ActorDAO.createActor(actorDTO);
 
-        // Update the actor
-        createdActor.setName("Lars Mikkelsen");
+
+        // Updating the actor
+        createdActor.setName("Lars Mikkelsen"); // Setting the name to Mads Mikkelsen
+
+
+        // Call the updateActor method with the actorDTO,
+        // which updates the Actor entity in the database
+        // and returns the result as an ActorDTO, stored in the updatedActor variable.
         ActorDTO updatedActor = actorDAO.updateActor(createdActor);
 
+
+        // Assert that the updated actor is not null,
+        // confirming the actor was updated successfully
         assertNotNull(updatedActor, "Actor should be updated successfully");
+
+
+        // Assert that the updated actor's name is not null,
+        // meaning the entity was updated
         assertEquals("Lars Mikkelsen", updatedActor.getName(), "Actor name should be updated");
     }
 
     @Test
     void deleteActor() {
         // Setup a known actor
-        ActorDTO actorDTO = new ActorDTO();
-        actorDTO.setName("Test Actor");
+        ActorDTO actorDTO = new ActorDTO(); // Create a new ActorDTO object
+        actorDTO.setName("Mad Mikkelsen");  // Setting the name to Mads Mikkelsen
+
+        // Call the createActor method with the actorDTO,
+        // which creates the Actor entity in the database
+        // and returns the result as an ActorDTO, stored in the createdActor variable.
         ActorDTO createdActor = ActorDAO.createActor(actorDTO);
 
         // Delete the actor
-        actorDAO.deleteActor(createdActor);
+        actorDAO.deleteActor(createdActor); // Removing the created actor
 
-        // Try to find the deleted actor
+        // Try to find the deleted actor by the findActor method that tries to fetch
+        // the id of the created actor from the database.
         ActorDTO deletedActor = actorDAO.findActor(createdActor.getId());
+
+        // It then confirms, it is null printing out the message:
+        // "Actor should be deleted"
         assertNull(deletedActor, "Actor should be deleted");
     }
 
     @Test
     public void testFindMoviesByActorId() {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
+
+
+        EntityManager em = emf.createEntityManager(); // Creating a new EntityManager
+
+        em.getTransaction().begin();  // Starting a new transaction
 
         // Create and persist an actor
         Actor actor = new Actor();
         actor.setName("Mads Mikkelsen");
         em.persist(actor);
 
-        // Create and persist movies
+        // Create and persist 2 movies
         Movie movie1 = new Movie();
         movie1.setTitle("Pusher");
         movie1.setActors(List.of(actor));
@@ -87,7 +127,7 @@ public class ActorDAOTest {
         em.getTransaction().commit();
         em.close();
 
-        // Call the method
+        // Calling the method findMoviesByActorId fetching the actor by its id
         List<MovieDTO> movies = actorDAO.findMoviesByActorId(actor.getId());
 
         // Verify results
@@ -99,15 +139,16 @@ public class ActorDAOTest {
 
     @Test
     void findMoviesByActorID() {
-        // 149 is Mads Mikkelsen
+        // 149 should be Mads Mikkelsen by the calling method
         actorDAO.findMoviesByActorId(149).forEach(movieDTO -> System.out.println(movieDTO.getTitle()));
     }
 
     @Test
     void getAllActors() {
-        List<ActorDTO> actors = actorDAO.getAllActors();
+        List<ActorDTO> actors = actorDAO.getAllActors(); // fetching all actors by method
         assertNotNull(actors, "Actors list should not be null");
         assertFalse(actors.isEmpty(), "Actors list should not be empty");
+        // Here we get the actorDTO printing out each name
         actors.forEach(actorDTO -> System.out.println(actorDTO.getName()));
     }
 }

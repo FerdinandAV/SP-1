@@ -18,6 +18,7 @@ class GenreDAOTest {
     void createGenres() {
     }
 
+    // Fetching all genres
     @Test
     void getAllGenres() {
         GenreDAO.getAllGenres().forEach(genreDTO -> System.out.println(genreDTO.getGenre()));
@@ -31,6 +32,8 @@ class GenreDAOTest {
     void findGenreByTMDBID() {
     }
 
+    // Calling the method searchByGenre
+    // here we are searching for the genre "Action"
     @Test
     void searchByGenre() {
         genreDAO.searchByGenre("Action").forEach(movieDTO -> System.out.println(movieDTO.getTitle()));

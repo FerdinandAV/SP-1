@@ -94,8 +94,10 @@ public class MovieService {
 
     public static void FillDBUpLast5yearsDanish(int totalPages) throws IOException, InterruptedException {
 
+        // filling up the genres by method
         GenreService.fillGenres();
 
+        // Create a new List of movieDTO
         List<MovieDTO> movieDTOS = new ArrayList<>();
 
         ExecutorService executor = Executors.newFixedThreadPool(6);
