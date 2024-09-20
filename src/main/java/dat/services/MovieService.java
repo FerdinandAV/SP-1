@@ -22,10 +22,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class MovieService {
 
@@ -80,7 +77,6 @@ public class MovieService {
             JsonNode movieNode = resultsNode.get(i);
             MovieDTO movie = objectMapper.treeToValue(movieNode, MovieDTO.class);
             System.out.println(movie.getTitle());
-            movies.add(movie);
 
             JsonNode genreNode = movieNode.get("genre_ids");
 
@@ -93,6 +89,7 @@ public class MovieService {
             List<GenreDTO> genresDTOfromDB = GenreDAO.createGenres(genreDTOS);
 
             MovieDTO movieDTO = MovieDAO.createMovie(movie);
+            movies.add(movieDTO);
 
             System.out.println(movieDTO);
 
@@ -106,23 +103,17 @@ public class MovieService {
     public static void FillDBUpLast5yearsDanish(int totalPages) throws IOException, InterruptedException {
         List<MovieDTO> movieDTOS = new ArrayList<>();
 
-        ExecutorService executor = Executors.newFixedThreadPool(6);
+        ExecutorService executor = Executors.newFixedThreadPool(12);
 
+        //Movies are fetched in parallel using threads
         List<Callable<List<MovieDTO>>> movieTasks = new ArrayList<>();
 
         for (int page = 1; page <= totalPages; page++) {
-
             int finalPage = page;
             movieTasks.add(() -> fetchAllMovies(finalPage));
         }
 
-        List<Future<List<MovieDTO>>> futures = null;
-        try {
-            futures = executor.invokeAll(movieTasks);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
+        List<Future<List<MovieDTO>>> futures = executor.invokeAll(movieTasks);
         for (Future<List<MovieDTO>> future : futures) {
             try {
                 List<MovieDTO> movies = future.get();
@@ -132,103 +123,119 @@ public class MovieService {
             }
         }
 
+        // Actors, directors are added to the movies in parallel using threads
+        List<Callable<Void>> actorDirectorTasks = new ArrayList<>();
+        for (MovieDTO movieDTO : movieDTOS) {
+            MovieDTO finalMovieDTO = movieDTO;
+            if (finalMovieDTO.getId() == null) {
+                throw new IllegalArgumentException("Movie ID is missing for: " + finalMovieDTO.getTitle());
+            }
+            actorDirectorTasks.add(() -> {
+                addActorsAndDirectorsForMovie(finalMovieDTO);
+                return null;
+            });
+        }
+
+        List<Future<Void>> actorDirectorFutures = executor.invokeAll(actorDirectorTasks);
+        for (Future<Void> future : actorDirectorFutures) {
+            try {
+                future.get();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         executor.shutdown();
 
     }
 
-    public static void addActorsAndDirectorsForMovies(List<MovieDTO> movieDTOS) throws IOException, InterruptedException {
+    public static void addActorsAndDirectorsForMovie(MovieDTO movieDTO) throws IOException, InterruptedException {
         MovieDAO movieDAO = new MovieDAO();
-        ActorDAO actorDAO = new ActorDAO();
-        DirectorDAO directorDAO = new DirectorDAO();
-        for (MovieDTO movieDTO : movieDTOS) {
 
-            // Build the request URL to fetch actors based on the movie ID and page
-            String url = "https://api.themoviedb.org/3/movie/" + movieDTO.getTmdb_id() + "/credits" + "?api_key=" + API_KEY;
+        // Build the request URL to fetch actors based on the movie ID and page
+        String url = "https://api.themoviedb.org/3/movie/" + movieDTO.getTmdb_id() + "/credits" + "?api_key=" + API_KEY;
 
-            // Create an HTTP client
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest
-                    .newBuilder()
-                    .uri(URI.create(url))
-                    .GET()
-                    .build();
+        // Create an HTTP client
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
 
-            // Send the HTTP request
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        // Send the HTTP request
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // Log the response body for debugging purposes
-            System.out.println("API Response: " + response.body());
+        // Log the response body for debugging purposes
+        System.out.println("API Response: " + response.body());
 
-            System.out.println(url);
+        // Parse the response
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        JsonNode rootNode = objectMapper.readTree(response.body());
 
-            // Parse the response
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            JsonNode rootNode = objectMapper.readTree(response.body());
+        // Get cast node
+        JsonNode castNode = rootNode.get("cast");
 
-            // Get cast node
-            JsonNode castNode = rootNode.get("cast");
+        // Get crew node
+        JsonNode crewNode = rootNode.get("crew");
 
-            // Get crew node
-            JsonNode crewNode = rootNode.get("crew");
+        List<ActorDTO> actorDTOS = new ArrayList<>();
+        List<DirectorDTO> directorDTOS = new ArrayList<>();
+        DirectorDTO directorDTO = null;
 
-            List<ActorDTO> actorDTOS = new ArrayList<>();
-            List<DirectorDTO> directorDTOS = new ArrayList<>();
-            List<GenreDTO> genreDTOS = new ArrayList<>();
-            DirectorDTO directorDTO = null;
+        for (int i = 0; i < castNode.size(); i++) {
+            JsonNode actorNode = castNode.get(i);
+            //Check if the cast is an actor
 
-            for (int i = 0; i < castNode.size(); i++) {
-                JsonNode actorNode = castNode.get(i);
-                //Check if the cast is an actor
+            String text = String.valueOf(actorNode.get("known_for_department"));
 
-                String text = String.valueOf(actorNode.get("known_for_department"));
-
-                if (text.contains("Acting")) {
-                    Long id = actorNode.get("id").asLong();
-                    ActorDTO actorDTO = ActorService.getActor(id);
-                    actorDTOS.add(actorDTO);
-                }
+            if (text.contains("Acting")) {
+                Long id = actorNode.get("id").asLong();
+                ActorDTO actorDTO = ActorService.getActor(id);
+                actorDTOS.add(actorDTO);
             }
-
-            for (int i = 0; i < crewNode.size(); i++) {
-                JsonNode actorNode = crewNode.get(i);
-                //Check if the cast is an actor
-
-                String text = String.valueOf(actorNode.get("known_for_department"));
-
-                if (text.contains("Acting")) {
-                    Long id = actorNode.get("id").asLong();
-                    actorDTOS.add(ActorService.getActor(id));
-                }
-
-                if (text.contains("Directing")) {
-                    Long id = actorNode.get("id").asLong();
-                    //If director is not found yet, set it.
-                    if (directorDTO == null) {
-                        directorDTO = DirectorService.getDirector(id);
-                        //directorDTOS.add(directorDTO);
-                    }
-                    //If director is found, still add the rest of directors to the list
-                    else {
-                        directorDTOS.add(DirectorService.getDirector(id));
-                    }
-                }
-            }
-
-            // Ensure actors are created before adding them to the movie
-            List<ActorDTO> actorsDTOfromDB = ActorDAO.createActors(actorDTOS);
-
-            // Ensure directors are created before adding them to the movie
-            DirectorDAO.createDirectors(directorDTOS);
-
-            // Ensure director is created before adding them to the movie
-            DirectorDTO directorDTOfromDB = DirectorDAO.createDirector(directorDTO);
-
-            // Add actors, director and genres to the movie
-            movieDAO.addActorsToMovie(movieDTO, actorsDTOfromDB);
-            movieDAO.addDirectorToMovie(movieDTO, directorDTOfromDB);
-
         }
+
+        for (int i = 0; i < crewNode.size(); i++) {
+            JsonNode actorNode = crewNode.get(i);
+            //Check if the cast is an actor
+
+            String text = String.valueOf(actorNode.get("known_for_department"));
+
+            if (text.contains("Acting")) {
+                Long id = actorNode.get("id").asLong();
+                actorDTOS.add(ActorService.getActor(id));
+            }
+
+            if (text.contains("Directing")) {
+                Long id = actorNode.get("id").asLong();
+                //If director is not found yet, set it.
+                if (directorDTO == null) {
+                    directorDTO = DirectorService.getDirector(id);
+                    //directorDTOS.add(directorDTO);
+                }
+                //If director is found, still add the rest of directors to the list
+                else {
+                    directorDTOS.add(DirectorService.getDirector(id));
+                }
+            }
+        }
+
+        // Ensure actors are created before adding them to the movie
+        List<ActorDTO> actorsDTOfromDB = ActorDAO.createActors(actorDTOS);
+
+        // Ensure directors are created before adding them to the movie
+        DirectorDAO.createDirectors(directorDTOS);
+
+        // Ensure director is created before adding them to the movie
+        DirectorDTO directorDTOfromDB = DirectorDAO.createDirector(directorDTO);
+
+        // Add actors, director and genres to the movie
+        movieDAO.addActorsToMovie(movieDTO, actorsDTOfromDB);
+        movieDAO.addDirectorToMovie(movieDTO, directorDTOfromDB);
+
+
     }
 
 
