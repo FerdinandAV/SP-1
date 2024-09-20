@@ -22,7 +22,7 @@ class MovieDAOTest {
 
     @Test
     void createMovie() {
-        //MovieDTO movie = MovieDAO.createMovie(movieDTO);
+        MovieDTO movieDTO = new MovieDTO(1145,954801L,"fuck you", "fuck you", "dwadoangorjangoagnaojgn", "dpwakdkpawd", "apkdwapkd", true, "0idawdaw", new ArrayList<>(), 18.486f, LocalDate.now(), false, 6.7f, 69);
         //System.out.println(movie);
     }
 

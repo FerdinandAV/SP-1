@@ -96,6 +96,14 @@ public class ActorDAOTest {
         assertTrue(movies.stream().anyMatch(movie -> movie.getTitle().equals("Pusher")), "Movie 1 should be present");
         assertTrue(movies.stream().anyMatch(movie -> movie.getTitle().equals("Blinkende Lygter")), "Movie 2 should be present");
     }
+
+    @Test
+    void getAllActors() {
+        List<ActorDTO> actors = actorDAO.getAllActors();
+        assertNotNull(actors, "Actors list should not be null");
+        assertFalse(actors.isEmpty(), "Actors list should not be empty");
+        actors.forEach(actorDTO -> System.out.println(actorDTO.getName()));
+    }
 }
 
 

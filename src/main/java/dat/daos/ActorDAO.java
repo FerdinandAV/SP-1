@@ -140,6 +140,16 @@ public class ActorDAO {
         }
     }
 
+    public List<ActorDTO> getAllActors() {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Actor> query = em.createQuery("SELECT a FROM Actor a", Actor.class);
+            List<Actor> actors = query.getResultList();
+            return actors.stream()
+                    .map(ActorDTO::new)
+                    .collect(Collectors.toList());
+        }
+    }
+
     /*public ActorDTO getMoviesByActor(int id) {
         try (EntityManager em = emf.createEntityManager()) {
             // Convert DTO to Entity
