@@ -34,18 +34,18 @@ class MovieDAOTest {
 
     @Test
     void updateMovie() {
-        MovieDTO newMovieDTO = movieDAO.findMovieByTitle("fuck you").get(0);
-        System.out.println(newMovieDTO);
-        newMovieDTO.setTitle("fuck you 2");
-        newMovieDTO.setOriginal_title("fuck you 2");
+        MovieDTO newMovieDTO = movieDAO.findMovieByTitle("a").get(0);
+        newMovieDTO.setTitle("test update");
         newMovieDTO.setRelease_date(LocalDate.now());
-        System.out.println(newMovieDTO);
         movieDAO.updateMovie(newMovieDTO);
+        assertNotNull(movieDAO.findMovieByTitle("test update").get(0).getTitle());
     }
 
     @Test
     void deleteMovie() {
-        //movieDAO.deleteMovie(movieDTO);
+        MovieDTO movieDTO = movieDAO.findMovieByTitle("new movie").get(0);
+        movieDAO.deleteMovie(movieDTO);
+        assertNull(movieDAO.findMovieByTitle("new movie"));
     }
 
     @Test
@@ -55,7 +55,7 @@ class MovieDAOTest {
     @Test
     void findMovieByTitle() {
         List<MovieDTO> movieDTOList = movieDAO.findMovieByTitle("druk");
-        movieDTOList.forEach(movieDTO -> System.out.println(movieDTO.getTitle()));
+        movieDTOList.forEach(movieDTO -> System.out.println("Title: " + movieDTO.getTitle() + ", Original title: " + movieDTO.getOriginal_title()));
     }
 
     @Test

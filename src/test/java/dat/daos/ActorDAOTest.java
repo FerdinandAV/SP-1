@@ -98,6 +98,12 @@ public class ActorDAOTest {
     }
 
     @Test
+    void findMoviesByActorID() {
+        // 149 is Mads Mikkelsen
+        actorDAO.findMoviesByActorId(149).forEach(movieDTO -> System.out.println(movieDTO.getTitle()));
+    }
+
+    @Test
     void getAllActors() {
         List<ActorDTO> actors = actorDAO.getAllActors();
         assertNotNull(actors, "Actors list should not be null");

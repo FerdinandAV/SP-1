@@ -125,12 +125,13 @@ public class MovieDAO {
 
             // Maps movies to MovieDTOs, filters by title and adds them to a list
             movieDTOS = movies.stream()
-                    .filter(movie -> movie.getTitle().toLowerCase().contains(title.toLowerCase()) || movie.getOriginal_title().toLowerCase().contains(title.toLowerCase()))
+                    .filter(movie -> movie.getTitle().toLowerCase().contains(title.toLowerCase()) || movie.getOriginal_title() != null && movie.getOriginal_title().toLowerCase().contains(title.toLowerCase()))
                     .map(movie -> new MovieDTO(movie))
                     .collect(Collectors.toList());
 
             if (movieDTOS.isEmpty()) {
                 System.out.println("There was no movies with this title");
+                return null;
             }
 
         }
