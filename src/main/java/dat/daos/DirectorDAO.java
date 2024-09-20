@@ -21,32 +21,37 @@ public class DirectorDAO {
     static EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("sp1");
 
     public static DirectorDTO createDirector(DirectorDTO directorDTO) {
-        Director director = new Director(directorDTO);
-        try (EntityManager em = emf.createEntityManager()) {
-            //Convert DTO to Entity
-            em.getTransaction().begin();
-
-            //Check if director already exists
-            TypedQuery<Director> query = em.createQuery("SELECT d FROM Director d WHERE d.name = :name", Director.class);
-            query.setParameter("name", director.getName());
-            if (query.getResultList().isEmpty()) {
-                em.persist(director);
-            } else {
-                System.out.println("Director already exists");
-                director = query.getSingleResult();
-            }
-
-            em.getTransaction().commit();
+        if (directorDTO == null) {
+            System.out.println("DirectorDTO is null");
         }
-        return new DirectorDTO(director);
+        else {
+            Director director = new Director(directorDTO);
+            try (EntityManager em = emf.createEntityManager()) {
+                //Convert DTO to Entity
+                em.getTransaction().begin();
+
+                //Check if director already exists
+                TypedQuery<Director> query = em.createQuery("SELECT d FROM Director d WHERE d.name = :name", Director.class);
+                query.setParameter("name", director.getName());
+                if (query.getResultList().isEmpty()) {
+                    em.merge(director);
+                } else {
+                    System.out.println("Director already exists");
+                    director = query.getSingleResult();
+                }
+
+                em.getTransaction().commit();
+                return new DirectorDTO(director);
+            }
+        }
+
+        return null;
 
     }
 
-    public static void createDirectors(Set<DirectorDTO> directorDTOS) {
+    public static void createDirectors(List<DirectorDTO> directorDTOS) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-
-            System.out.println("Fill her up!!!!");
 
             for (DirectorDTO directorDTO : directorDTOS) {
                 Director director = new Director(directorDTO);
