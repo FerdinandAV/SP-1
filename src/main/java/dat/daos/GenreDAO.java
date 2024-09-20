@@ -44,7 +44,7 @@ public class GenreDAO {
         return genreDTOS;
     }
 
-    public List<GenreDTO> getAllGenres() {
+    public static List<GenreDTO> getAllGenres() {
         try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<Genre> query = em.createQuery("SELECT g FROM Genre g", Genre.class);
             List<Genre> genres = query.getResultList();
@@ -56,6 +56,14 @@ public class GenreDAO {
             }
 
             return genreDTOs;
+        }
+    }
+
+    public static GenreDTO getGenreByTMDBID(Long id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Genre> query = em.createQuery("SELECT g FROM Genre g WHERE g.tmdbId = :id", Genre.class);
+            query.setParameter("id", id);
+            return new GenreDTO(query.getSingleResult());
         }
     }
 

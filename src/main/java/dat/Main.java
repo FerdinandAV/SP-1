@@ -22,11 +22,9 @@ import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
-
         try {
-
             //Fill database up with movies
-            MovieService.FillDBUpLast5yearsDanish(1);
+            MovieService.FillDBUpLast5yearsDanish(5);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

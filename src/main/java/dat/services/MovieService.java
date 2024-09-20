@@ -70,9 +70,11 @@ public class MovieService {
 
         List<MovieDTO> movies = new ArrayList<>();
 
+        //List<GenreDTO> allGenres = GenreDAO.getAllGenres();
+
         // Process the first 20 movies
         for (int i = 0; i < Math.min(20, resultsNode.size()); i++) {
-            List<GenreDTO> genreDTOS = new ArrayList<>();
+            List<GenreDTO> genresDTOS = new ArrayList<>();
 
             JsonNode movieNode = resultsNode.get(i);
             MovieDTO movie = objectMapper.treeToValue(movieNode, MovieDTO.class);
@@ -82,11 +84,10 @@ public class MovieService {
 
             for (int g = 0; g < Math.min(20, genreNode.size()); g++) {
                 Long id = (long) genreNode.get(g).asInt();
-                genreDTOS.add(GenreService.getGenre(id));
+                genresDTOS.add(GenreDAO.getGenreByTMDBID(id));
             }
 
             // Ensure genre is created before adding them to the movie
-            List<GenreDTO> genresDTOfromDB = GenreDAO.createGenres(genreDTOS);
 
             MovieDTO movieDTO = MovieDAO.createMovie(movie);
             movies.add(movieDTO);
@@ -94,13 +95,16 @@ public class MovieService {
             System.out.println(movieDTO);
 
             // Add genres to the movie
-            movieDAO.addGenresToMovie(movieDTO, genresDTOfromDB);
+            movieDAO.addGenresToMovie(movieDTO, genresDTOS);
         }
 
         return movies;
     }
 
     public static void FillDBUpLast5yearsDanish(int totalPages) throws IOException, InterruptedException {
+
+        GenreService.fillGenres();
+
         List<MovieDTO> movieDTOS = new ArrayList<>();
 
         ExecutorService executor = Executors.newFixedThreadPool(12);
@@ -234,7 +238,6 @@ public class MovieService {
         // Add actors, director and genres to the movie
         movieDAO.addActorsToMovie(movieDTO, actorsDTOfromDB);
         movieDAO.addDirectorToMovie(movieDTO, directorDTOfromDB);
-
 
     }
 

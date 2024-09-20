@@ -56,4 +56,40 @@ public class GenreService {
         return null;
     }
 
+    public static void fillGenres() throws IOException, InterruptedException {
+
+        // Build the request URL to fetch actors based on the movie ID and page
+        String url = "https://api.themoviedb.org/3/genre/movie/list" + "?api_key=" + API_KEY;
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+
+        System.out.println(url);
+
+        // Send the HTTP request
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Log the response body for debugging purposes
+        System.out.println("API Response: " + response.body());
+
+        // Parse the response
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        JsonNode genresNode = objectMapper.readTree(response.body()).get("genres");
+
+        List<GenreDTO> genreDTOS = new ArrayList<>();
+
+        for (int i = 0; i < genresNode.size(); i++) {
+            genreDTOS.add(objectMapper.treeToValue(genresNode.get(i), GenreDTO.class));
+        }
+
+        GenreDAO.createGenres(genreDTOS);
+
+    }
+
 }
